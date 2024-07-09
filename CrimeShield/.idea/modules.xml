@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CrimeShield.iml" filepath="$PROJECT_DIR$/CrimeShield.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CrimeShield.iml" filepath="$PROJECT_DIR$/.idea/CrimeShield.iml" />
     </modules>
   </component>
 </project>
