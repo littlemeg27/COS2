@@ -6,12 +6,16 @@
 
     <com.example.crimeshield.Main
             style="@style/Widget.Theme.CrimeShield.MyView"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:paddingLeft="20dp"
             android:paddingBottom="40dp"
             app:exampleDimension="24sp"
             app:exampleString="Hello, Main"
             app:exampleDrawable="@android:drawable/ic_menu_add"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
 
 </FrameLayout>
