@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+          android:id="@+id/home"
+          android:icon="@drawable/baseline_home_24" />
+    <item android:title="Map"
+          android:id="@+id/map"
+          android:icon="@drawable/baseline_map_24" />
+    <item android:title="Add"
+          android:id="@+id/add"
+          android:icon="@drawable/baseline_add_to_photos_24" />
+    <item android:title="Settings"
+          android:id="@+id/settings"
+          android:icon="@drawable/baseline_settings_24" />
+</menu>
