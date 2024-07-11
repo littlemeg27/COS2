@@ -1,8 +1,8 @@
-<ConstraintLayout xmlns="http://schemas.android.com/apk/res/android"
-                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                  xmlns:android="http://schemas.android.com/tools"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
     <FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="0dp"
@@ -10,15 +10,19 @@
             app:layout_constraintBottom_toTopOf="@+id/BottomNavigationView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.49"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="658dp"
+            app:layout_constraintVertical_bias="0.9">
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/BottomNavigationView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/navbar"/>
+            app:menu="@menu/navbar" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.9"/>
 
-</ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
