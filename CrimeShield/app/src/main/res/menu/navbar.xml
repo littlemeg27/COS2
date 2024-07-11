@@ -7,8 +7,8 @@
     <item android:title="Map"
           android:id="@+id/map"
           android:icon="@drawable/baseline_map_24" />
-    <item android:title="Add"
-          android:id="@+id/add"
+    <item android:title="Create"
+          android:id="@+id/create"
           android:icon="@drawable/baseline_add_to_photos_24" />
     <item android:title="Settings"
           android:id="@+id/settings"
