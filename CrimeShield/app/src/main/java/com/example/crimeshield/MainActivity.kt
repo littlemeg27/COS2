@@ -12,48 +12,50 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 
-class MainActivity : ComponentActivity()
-{
+class MainActivity : ComponentActivity() {
 
     private lateinit var binding : MainActivityBinding
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(HomeFragment())
+        replaceFragment(Home())
 
-        setContent
-        {
-            CrimeShieldTheme
-            {
-                binding.bottomNavigationView.setOnItemSelectedListener
+        setContent {
+            CrimeShieldTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
+                    Greeting("Android")
 
-                    when(it.itemId)
+                    binding.bottomNavigationView.setOnItemSelectedListener
                     {
-                        R.id.home -> replaceFragment(HomeFragment())
-                        R.id.map -> replaceFragment(MapFragment())
-                        R.id.create -> replaceFragment(CreateFragment())
-                        R.id.settings -> replaceFragment(SettingsFragment())
-
-                        else ->
+                        when(it.itemId)
                         {
+                            R.id.home -> replaceFragment(HomeFragment())
+                            R.id.map -> replaceFragment(MapFragment())
+                            R.id.create -> replaceFragment(CreateFragment())
+                            R.id.settings -> replaceFragment(SettingsFragment())
 
+                            else ->
+                            {
+
+                            }
                         }
+                        true
                     }
-                    true
                 }
 
-            }
-            private fun replaceFragment(fragment : Fragment)
-            {
-                val fragmentManager = supportFragmentManager
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.frame_layout,fragment)
-                fragmentTransaction.commit()
+                    private fun replaceFragment(fragment : Fragment)
+                    {
+                        val fragmentManager = supportFragmentManager
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentTransaction.replace(R.id.frame_layout,fragment)
+                        fragmentTransaction.commit()
+                    }
+                }
             }
         }
     }
