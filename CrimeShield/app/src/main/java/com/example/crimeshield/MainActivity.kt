@@ -1,5 +1,6 @@
 package com.example.crimeshield
 
+import android.graphics.drawable.Icon
 import android.media.Image
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Im
@@ -16,12 +17,20 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import kotlin.math.roundToInt
+
+data class BottomNavigationItem(
+    val  title: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val badgeCount: Int? = null
+)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,8 +93,16 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
         }
         Image(painter = painterResource(id = R.drawable.map),
             contentDescription = "Map")
-
     }
+    Scaffold (
+        bottomBar =
+        {
+            NavigationBar
+            {
+
+            }
+        }
+    )
 }
 
 
