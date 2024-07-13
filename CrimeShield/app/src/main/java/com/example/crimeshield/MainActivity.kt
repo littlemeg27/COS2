@@ -1,19 +1,29 @@
 package com.example.crimeshield
 
+import android.media.Image
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.sp
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +39,23 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Immutable
+data class PixelAlignment (
+    val offsetX: Float,
+    val offsetY: Float
+) : Alignment {
+
+    override fun align(size: IntSize, space: IntSize, layoutDirection: LayoutDirection): IntOffset {
+        val centerX = (space.width - size.width).toFloat() / 2f
+        val centerY = (space.height - size.height).toFloat() / 2f
+
+        val x = centerX + offsetX
+        val y = centerY + offsetY
+
+        return IntOffset(x.roundToInt(), y.roundToInt())
+    }
+}
+
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier)
 {
@@ -36,15 +63,17 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-
     )
     {
         Text(
             text = "CRIME SHIELD",
             fontSize = 30.sp
         )
+        Image(painter = painterResource(id = R.drawable.crimeshieldicon),
+            contentDescription = "")
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
