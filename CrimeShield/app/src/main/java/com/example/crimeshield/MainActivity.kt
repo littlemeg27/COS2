@@ -8,20 +8,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import kotlin.math.roundToInt
 
@@ -67,10 +65,26 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
     {
         Text(
             text = "CRIME SHIELD",
-            fontSize = 30.sp
-        )
+            fontSize = 30.sp)
         Image(painter = painterResource(id = R.drawable.crimeshieldicon),
-            contentDescription = "")
+            contentDescription = "Icon")
+        Text(
+            text = "Create a Report!",
+            fontSize = 15.sp)
+        Button(
+            modifier = Modifier.height(50.dp).width(190.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red,
+                contentColor = Color.White
+            ),
+            onClick = { }
+        )
+        {
+            Text(text = "Create a Report!")
+        }
+        Image(painter = painterResource(id = R.drawable.map),
+            contentDescription = "Map")
+
     }
 }
 
