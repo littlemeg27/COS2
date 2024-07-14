@@ -11,6 +11,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -26,40 +35,47 @@ import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import kotlin.math.roundToInt
 
 data class BottomNavigationItem(
-    val  title: String,
+    val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val badgeCount: Int? = null
+    val hasNews: Boolean
 )
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CrimeShieldTheme {
+            CrimeShieldTheme{
+
+                val items = listOf(
+                    BottomNavigationItem(
+                        title = "Home",
+                        selectedIcon = Icons.Filled.Home,
+                        unselectedIcon = Icons.Outlined.Home,
+                        hasNews = false,),
+                    BottomNavigationItem(
+                        title = "Map",
+                        selectedIcon = Icons.Filled.Menu,
+                        unselectedIcon = Icons.Outlined.Menu,
+                        hasNews = true),
+                    BottomNavigationItem(
+                        title = "Home",
+                        selectedIcon = Icons.Filled.Create,
+                        unselectedIcon = Icons.Outlined.Create,
+                        hasNews = false),
+                    BottomNavigationItem(
+                        title = "Settings",
+                        selectedIcon = Icons.Filled.Settings,
+                        unselectedIcon = Icons.Outlined.Settings,
+                        hasNews = false)
+                )
+
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Greeting("Android")
                 }
             }
         }
-    }
-}
-
-@Immutable
-data class PixelAlignment (
-    val offsetX: Float,
-    val offsetY: Float
-) : Alignment {
-
-    override fun align(size: IntSize, space: IntSize, layoutDirection: LayoutDirection): IntOffset {
-        val centerX = (space.width - size.width).toFloat() / 2f
-        val centerY = (space.height - size.height).toFloat() / 2f
-
-        val x = centerX + offsetX
-        val y = centerY + offsetY
-
-        return IntOffset(x.roundToInt(), y.roundToInt())
     }
 }
 
@@ -94,16 +110,55 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
         Image(painter = painterResource(id = R.drawable.map),
             contentDescription = "Map")
     }
-    Scaffold (
+    Scaffold(
         bottomBar =
         {
-            NavigationBar
-            {
-
+            NavigationBar {
+                items.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            // navController.navigate(item.title)
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        icon = {
+                            BadgedBox(
+                                badge = {
+                                    if(item.badgeCount != null) {
+                                        Badge {
+                                            Text(text = item.badgeCount.toString())
+                                        }
+                                    } else if(item.hasNews) {
+                                        Badge()
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        }
+                    )
+                }
             }
         }
-    )
+    ) {
+
+    }
 }
+}
+}
+}
+}
+
+
 
 
 @Preview(showBackground = true)
