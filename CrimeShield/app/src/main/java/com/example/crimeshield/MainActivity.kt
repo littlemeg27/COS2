@@ -113,32 +113,40 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
     Scaffold(
         bottomBar =
         {
-            NavigationBar {
+            NavigationBar{
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
-                        onClick = {
+                        onClick =
+                        {
                             selectedItemIndex = index
                             // navController.navigate(item.title)
                         },
-                        label = {
+                        label =
+                        {
                             Text(text = item.title)
                         },
                         alwaysShowLabel = false,
-                        icon = {
+                        icon =
+                        {
                             BadgedBox(
-                                badge = {
-                                    if(item.badgeCount != null) {
-                                        Badge {
+                                badge =
+                                {
+                                    if(item.badgeCount != null)
+                                    {
+                                        Badge
+                                        {
                                             Text(text = item.badgeCount.toString())
                                         }
-                                    } else if(item.hasNews) {
+                                    } else if(item.hasNews)
+                                    {
                                         Badge()
                                     }
                                 }
                             ) {
                                 Icon(
-                                    imageVector = if (index == selectedItemIndex) {
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
                                         item.selectedIcon
                                     } else item.unselectedIcon,
                                     contentDescription = item.title
