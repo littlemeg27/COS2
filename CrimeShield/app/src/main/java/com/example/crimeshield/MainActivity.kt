@@ -1,5 +1,6 @@
 package com.example.crimeshield
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Icon
 import android.media.Image
 import android.os.Bundle
@@ -59,38 +60,42 @@ class MainActivity : ComponentActivity()
 
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
+                    Home("Android")
                 }
             }
         }
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier)
-{
+fun Home(name: String, modifier: Modifier = Modifier) {
     val items = listOf(
         BottomNavigationItem(
             title = "Home",
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
-            hasNews = false,),
+            hasNews = false,
+        ),
         BottomNavigationItem(
             title = "Map",
             selectedIcon = Icons.Filled.LocationOn,
             unselectedIcon = Icons.Outlined.LocationOn,
-            hasNews = true),
+            hasNews = true
+        ),
         BottomNavigationItem(
             title = "Home",
             selectedIcon = Icons.Filled.AddCircle,
             unselectedIcon = Icons.Outlined.AddCircle,
-            hasNews = false),
+            hasNews = false
+        ),
         BottomNavigationItem(
             title = "Settings",
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
-            hasNews = false)
+            hasNews = false
+        )
     )
 
     var selectedItemIndex by rememberSaveable()
@@ -133,48 +138,50 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
             painter = painterResource(id = R.drawable.map),
             contentDescription = "Map"
         )
-    }
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                items.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        selected = selectedItemIndex == index,
-                        onClick = {
-                            selectedItemIndex = index
-                            // navController.navigate(item.title)
-                        },
-                        label = {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = false,
-                        icon = {
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
+
+        Scaffold(
+            bottomBar = {
+                NavigationBar {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            selected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                            },
+                            label = {
+                                Text(text = item.title)
+                            },
+                            alwaysShowLabel = false,
+                            icon =
+                            {
+                                BadgedBox(
+                                    badge =
                                     {
-                                        Badge {
-                                            Badge()
+                                        if (item.hasNews)
+                                        {
+                                            Badge {
+                                                Badge()
+                                            }
                                         }
                                     }
+                                ) {
+                                    Icon(
+                                        imageVector = if (index == selectedItemIndex)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex)
-                                    {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
+        ) {
         }
-    ) {
     }
+
 }
 
 
@@ -184,6 +191,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier)
 @Composable
 fun GreetingPreview() {
     CrimeShieldTheme {
-        Greeting("Android")
+        Home("Android")
     }
 }
