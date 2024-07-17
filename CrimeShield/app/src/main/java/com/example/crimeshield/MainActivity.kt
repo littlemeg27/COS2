@@ -8,7 +8,9 @@ import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -38,8 +40,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import kotlin.math.roundToInt
 
@@ -71,6 +77,8 @@ class MainActivity : ComponentActivity()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(name: String, modifier: Modifier = Modifier) {
+
+    //Information for UI
     val items = listOf(
         BottomNavigationItem(
             title = "Home",
@@ -102,6 +110,10 @@ fun Home(name: String, modifier: Modifier = Modifier) {
     {
         mutableStateOf(0)
     }
+
+    val rootNavController = rememberNavController()
+    val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
+    //Information for UI
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -143,10 +155,21 @@ fun Home(name: String, modifier: Modifier = Modifier) {
             bottomBar = {
                 NavigationBar {
                     items.forEachIndexed { index, item ->
+                        val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
+
                         NavigationBarItem(
                             selected = selectedItemIndex == index,
                             onClick = {
                                 selectedItemIndex = index
+                                rootNavController.navigate(item.title.lowercase())
+                                {
+                                    popUpTo(rootNavController.graph.findStartDestination().id)
+                                    {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             },
                             label = {
                                 Text(text = item.title)
@@ -181,12 +204,93 @@ fun Home(name: String, modifier: Modifier = Modifier) {
         ) {
         }
     }
+}
+//Home Screen
 
+@Composable
+fun HomeScreen(
+    text: String,
+    onNextClick: () -> Unit
+)
+{
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = text)
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = onNextClick) {
+            Text("Next")
+        }
+    }
+}
+
+@Composable
+fun MapScreen(
+    text: String,
+    onNextClick: () -> Unit
+)
+{
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = text)
+        Spacer(Modifier.height(16.dp))
+
+    }
+}
+
+@Composable
+fun CreateScreen(
+    text: String,
+    onNextClick: () -> Unit
+)
+{
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = text)
+        Spacer(Modifier.height(16.dp))
+
+    }
+}
+
+@Composable
+fun SettingsScreen(
+    text: String,
+    onNextClick: () -> Unit
+)
+{
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = text)
+        Spacer(Modifier.height(16.dp))
+    }
 }
 
 
 
 
+
+
+
+
+
+
+
+//To show the App
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
