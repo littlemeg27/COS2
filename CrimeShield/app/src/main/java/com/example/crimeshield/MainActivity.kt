@@ -202,6 +202,26 @@ fun Home(name: String, modifier: Modifier = Modifier) {
                 }
             }
         ) {
+            padding ->
+            NavHost(rootNavController, startDestination = "home")
+            {
+                composable("home")
+                {
+                    HomeScreen()
+                }
+                composable("map")
+                {
+                    MapScreen()
+                }
+                composable("create")
+                {
+                    CreateScreen()
+                }
+                composable("settings")
+                {
+                    SettingsScreen()
+                }
+            }
         }
     }
 }
@@ -211,21 +231,26 @@ fun Home(name: String, modifier: Modifier = Modifier) {
 fun HomeScreen(
     text: String,
     onNextClick: () -> Unit
-)
-{
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = text)
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onNextClick) {
-            Text("Next")
-        }
+) {
+    val chatNavController = rememberNavController()
+    NavHost(chatNavController, startDestination = "chat1")
+    {
+
     }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        )
+        {
+            Text(text = text)
+            Spacer(Modifier.height(16.dp))
+        }
+
 }
+
 
 @Composable
 fun MapScreen(
@@ -233,16 +258,20 @@ fun MapScreen(
     onNextClick: () -> Unit
 )
 {
+    val chatNavController = rememberNavController()
+    NavHost(chatNavController, startDestination = "chat1")
+    {
+
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ) {
+    )   {
         Text(text = text)
         Spacer(Modifier.height(16.dp))
-
-    }
+        }
 }
 
 @Composable
@@ -251,16 +280,20 @@ fun CreateScreen(
     onNextClick: () -> Unit
 )
 {
+    val chatNavController = rememberNavController()
+    NavHost(chatNavController, startDestination = "chat1")
+    {
+
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ) {
+    )   {
         Text(text = text)
         Spacer(Modifier.height(16.dp))
-
-    }
+        }
 }
 
 @Composable
@@ -269,15 +302,20 @@ fun SettingsScreen(
     onNextClick: () -> Unit
 )
 {
+    val chatNavController = rememberNavController()
+    NavHost(chatNavController, startDestination = "chat1")
+    {
+
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ) {
+    )   {
         Text(text = text)
         Spacer(Modifier.height(16.dp))
-    }
+        }
 }
 
 
