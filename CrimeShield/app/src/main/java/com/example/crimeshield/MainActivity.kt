@@ -1,10 +1,7 @@
 package com.example.crimeshield
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Icon
-import android.media.Image
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -16,38 +13,33 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
-import kotlin.math.roundToInt
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+
 
 data class BottomNavigationItem(
     val title: String,
@@ -66,7 +58,7 @@ class MainActivity : ComponentActivity()
 
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Home("Android")
+                    Home()
                 }
             }
         }
@@ -76,7 +68,7 @@ class MainActivity : ComponentActivity()
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(name: String, modifier: Modifier = Modifier) {
+fun Home() {
 
     //Information for UI
     val items = listOf(
@@ -108,11 +100,11 @@ fun Home(name: String, modifier: Modifier = Modifier) {
 
     var selectedItemIndex by rememberSaveable()
     {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
-    val rootNavController = rememberNavController()
-    val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     //Information for UI
 
     Column(
@@ -161,9 +153,9 @@ fun Home(name: String, modifier: Modifier = Modifier) {
                             selected = selectedItemIndex == index,
                             onClick = {
                                 selectedItemIndex = index
-                                rootNavController.navigate(item.title.lowercase())
+                                navController.navigate(item.title.lowercase())
                                 {
-                                    popUpTo(rootNavController.graph.findStartDestination().id)
+                                    popUpTo(navController.graph.findStartDestination().id)
                                     {
                                         saveState = true
                                     }
@@ -177,6 +169,15 @@ fun Home(name: String, modifier: Modifier = Modifier) {
                             alwaysShowLabel = false,
                             icon =
                             {
+                                Icon(
+                                    imageVector = if(isSelected)
+                                    {
+                                        item.selectedIcon
+                                    }
+                                    else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+
                                 BadgedBox(
                                     badge =
                                     {
@@ -203,23 +204,23 @@ fun Home(name: String, modifier: Modifier = Modifier) {
             }
         ) {
             padding ->
-            NavHost(rootNavController, startDestination = "home")
+            NavHost(navController, startDestination = "home")
             {
                 composable("home")
                 {
-                    HomeScreen()
+                    HomeScreen(text = "")
                 }
                 composable("map")
                 {
-                    MapScreen()
+                    MapScreen(text = "")
                 }
                 composable("create")
                 {
-                    CreateScreen()
+                    CreateScreen(text = "")
                 }
                 composable("settings")
                 {
-                    SettingsScreen()
+                    SettingsScreen(text = "")
                 }
             }
         }
@@ -230,10 +231,9 @@ fun Home(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun HomeScreen(
     text: String,
-    onNextClick: () -> Unit
 ) {
-    val chatNavController = rememberNavController()
-    NavHost(chatNavController, startDestination = "chat1")
+    val homeNavController = rememberNavController()
+    NavHost(homeNavController, startDestination = "home1")
     {
 
     }
@@ -255,11 +255,10 @@ fun HomeScreen(
 @Composable
 fun MapScreen(
     text: String,
-    onNextClick: () -> Unit
 )
 {
-    val chatNavController = rememberNavController()
-    NavHost(chatNavController, startDestination = "chat1")
+    val mapNavController = rememberNavController()
+    NavHost(mapNavController, startDestination = "map1")
     {
 
     }
@@ -277,11 +276,10 @@ fun MapScreen(
 @Composable
 fun CreateScreen(
     text: String,
-    onNextClick: () -> Unit
 )
 {
-    val chatNavController = rememberNavController()
-    NavHost(chatNavController, startDestination = "chat1")
+    val createNavController = rememberNavController()
+    NavHost(createNavController, startDestination = "create1")
     {
 
     }
@@ -299,11 +297,10 @@ fun CreateScreen(
 @Composable
 fun SettingsScreen(
     text: String,
-    onNextClick: () -> Unit
 )
 {
-    val chatNavController = rememberNavController()
-    NavHost(chatNavController, startDestination = "chat1")
+    val settingsNavController = rememberNavController()
+    NavHost(settingsNavController, startDestination = "settings1")
     {
 
     }
@@ -318,21 +315,12 @@ fun SettingsScreen(
         }
 }
 
-
-
-
-
-
-
-
-
-
-
 //To show the App
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun GreetingPreview()
+{
     CrimeShieldTheme {
-        Home("Android")
+        Home()
     }
 }
