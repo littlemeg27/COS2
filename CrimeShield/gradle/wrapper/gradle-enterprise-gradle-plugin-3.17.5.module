@@ -1,0 +1,118 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.gradle",
+    "module": "gradle-enterprise-gradle-plugin",
+    "version": "3.17.5",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.8"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.gradle",
+          "module": "develocity-gradle-plugin",
+          "version": {
+            "requires": "3.17.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "gradle-enterprise-gradle-plugin-3.17.5.jar",
+          "url": "gradle-enterprise-gradle-plugin-3.17.5.jar",
+          "size": 881,
+          "sha512": "e7fc83ceaac58bf76d97cbe15f2ec4c6547e4fe834812bef190b41a1d73d73a5622b3dc34609795d47313d29be2d7c749da451f4b5af84be81383556ecc5ff39",
+          "sha256": "c3bfab737b30ae63c42b61296a4cc4b7dda779809dc14bbf675af71caa6ad9dc",
+          "sha1": "d9ced4137c5b337c46c08d823323a35dfd7b4408",
+          "md5": "b6ace919653994f9c26d149a2d8096d5"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.gradle",
+          "module": "develocity-gradle-plugin",
+          "version": {
+            "requires": "3.17.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "gradle-enterprise-gradle-plugin-3.17.5.jar",
+          "url": "gradle-enterprise-gradle-plugin-3.17.5.jar",
+          "size": 881,
+          "sha512": "e7fc83ceaac58bf76d97cbe15f2ec4c6547e4fe834812bef190b41a1d73d73a5622b3dc34609795d47313d29be2d7c749da451f4b5af84be81383556ecc5ff39",
+          "sha256": "c3bfab737b30ae63c42b61296a4cc4b7dda779809dc14bbf675af71caa6ad9dc",
+          "sha1": "d9ced4137c5b337c46c08d823323a35dfd7b4408",
+          "md5": "b6ace919653994f9c26d149a2d8096d5"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "gradle-enterprise-gradle-plugin-3.17.5-javadoc.jar",
+          "url": "gradle-enterprise-gradle-plugin-3.17.5-javadoc.jar",
+          "size": 261,
+          "sha512": "1487e5a20c9e4d74f298e07c42e96a61be11b7a768c3fbc199ee138cd68e1fc2267d1cfe3f11f288acc05df755315344d052cc5f6f751f126ab4fe1caa5125ea",
+          "sha256": "c6deada2fac53b8ea6523dbda77597b128006674616f140f04df23264c6d1aa3",
+          "sha1": "2ad14aed781c4a73ed4dbb421966d408a0a06686",
+          "md5": "f43436d6bec321290f6af228ad602604"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "gradle-enterprise-gradle-plugin-3.17.5-sources.jar",
+          "url": "gradle-enterprise-gradle-plugin-3.17.5-sources.jar",
+          "size": 261,
+          "sha512": "1487e5a20c9e4d74f298e07c42e96a61be11b7a768c3fbc199ee138cd68e1fc2267d1cfe3f11f288acc05df755315344d052cc5f6f751f126ab4fe1caa5125ea",
+          "sha256": "c6deada2fac53b8ea6523dbda77597b128006674616f140f04df23264c6d1aa3",
+          "sha1": "2ad14aed781c4a73ed4dbb421966d408a0a06686",
+          "md5": "f43436d6bec321290f6af228ad602604"
+        }
+      ]
+    }
+  ]
+}

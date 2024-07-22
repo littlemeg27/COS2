@@ -248,7 +248,6 @@ fun HomeScreen(
             Text(text = text)
             Spacer(Modifier.height(16.dp))
         }
-
 }
 
 
