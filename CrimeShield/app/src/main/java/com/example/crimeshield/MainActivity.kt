@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -57,18 +58,28 @@ class MainActivity : ComponentActivity()
             CrimeShieldTheme{
 
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Home()
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
+                {
+                    GreetingPreview()
+
+                    val navController = rememberNavController()
+                    NavHost(navController, startDestination = "home")
+                    {
+                        composable("home") { HomeScreen(navController) }
+                        composable("details") { MapScreen(navController) }
+                        composable("create") { CreateScreen(navController) }
+                        composable("settings") { SettingsScreen(navController) }
+                    }
                 }
             }
         }
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+/*@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home() {
+fun Greeting() {
 
     //Information for UI
     val items = listOf(
@@ -107,41 +118,6 @@ fun Home() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     //Information for UI
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-    )
-    {
-        Text(
-            text = "CRIME SHIELD",
-            fontSize = 30.sp
-        )
-        Image(
-            painter = painterResource(id = R.drawable.crimeshieldicon),
-            contentDescription = "Icon"
-        )
-        Text(
-            text = "Create a Report!",
-            fontSize = 15.sp
-        )
-        Button(
-            modifier = Modifier
-                .height(50.dp)
-                .width(190.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Red,
-                contentColor = Color.White
-            ),
-            onClick = { }
-        )
-        {
-            Text(text = "Create a Report!")
-        }
-        Image(
-            painter = painterResource(id = R.drawable.map),
-            contentDescription = "Map"
-        )
 
         Scaffold(
             bottomBar = {
@@ -227,7 +203,9 @@ fun Home() {
     }
 }
 //Home Screen
+*/
 
+/*
 @Composable
 fun HomeScreen(
     text: String,
@@ -312,7 +290,100 @@ fun SettingsScreen(
         Text(text = text)
         Spacer(Modifier.height(16.dp))
         }
+}*/
+
+@Composable
+fun HomeScreen(navController: NavController)
+{
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Greeting("World")
+        Button(onClick = { navController.navigate("details") })
+        {
+            Text(text = "Go to Details")
+        }
+        Text(
+            text = "CRIME SHIELD",
+            fontSize = 30.sp
+        )
+        Image(
+            painter = painterResource(id = R.drawable.crimeshieldicon),
+            contentDescription = "Icon"
+        )
+        Text(
+            text = "Create a Report!",
+            fontSize = 15.sp
+        )
+        Button(
+            modifier = Modifier
+                .height(50.dp)
+                .width(190.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red,
+                contentColor = Color.White
+            ),
+            onClick = { }
+        )
+        {
+            Text(text = "Create a Report!")
+        }
+        Image(
+            painter = painterResource(id = R.drawable.map),
+            contentDescription = "Map"
+      )}
 }
+
+@Composable
+fun MapScreen(navController: NavController)
+{
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(text = "Map Screen")
+        Button(onClick = { navController.navigate("home") })
+        {
+            Text(text = "Back to Home")
+        }
+    }
+}
+
+@Composable
+fun CreateScreen(navController: NavController)
+{
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(text = "Create Screen")
+        Button(onClick = { navController.navigate("home") })
+        {
+            Text(text = "Back to Home")
+        }
+    }
+}
+
+@Composable
+fun SettingsScreen(navController: NavController)
+{
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(text = "Settings Screen")
+        Button(onClick = { navController.navigate("home") })
+        {
+            Text(text = "Back to Home")
+        }
+    }
+}
+
 
 //To show the App
 @Preview(showBackground = true)
@@ -320,6 +391,6 @@ fun SettingsScreen(
 fun GreetingPreview()
 {
     CrimeShieldTheme {
-        Home()
+        GreetingPreview("Android")
     }
 }
