@@ -5,9 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -49,6 +47,37 @@ data class BottomNavigationItem(
     val hasNews: Boolean
 )
 
+//Information for UI
+val items = listOf(
+    BottomNavigationItem(
+        title = "Home",
+        selectedIcon = Icons.Filled.Home,
+        unselectedIcon = Icons.Outlined.Home,
+        hasNews = false,
+    ),
+    BottomNavigationItem(
+        title = "Map",
+        selectedIcon = Icons.Filled.LocationOn,
+        unselectedIcon = Icons.Outlined.LocationOn,
+        hasNews = true
+    ),
+    BottomNavigationItem(
+        title = "Home",
+        selectedIcon = Icons.Filled.AddCircle,
+        unselectedIcon = Icons.Outlined.AddCircle,
+        hasNews = false
+    ),
+    BottomNavigationItem(
+        title = "Settings",
+        selectedIcon = Icons.Filled.Settings,
+        unselectedIcon = Icons.Outlined.Settings,
+        hasNews = false
+    )
+)
+
+
+//Information for UI
+
 class MainActivity : ComponentActivity()
 {
     override fun onCreate(savedInstanceState: Bundle?)
@@ -60,7 +89,7 @@ class MainActivity : ComponentActivity()
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
-                    GreetingPreview()
+                    Greeting("Android")
 
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "home")
@@ -76,39 +105,10 @@ class MainActivity : ComponentActivity()
     }
 }
 
-/*@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Greeting() {
-
-    //Information for UI
-    val items = listOf(
-        BottomNavigationItem(
-            title = "Home",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
-            hasNews = false,
-        ),
-        BottomNavigationItem(
-            title = "Map",
-            selectedIcon = Icons.Filled.LocationOn,
-            unselectedIcon = Icons.Outlined.LocationOn,
-            hasNews = true
-        ),
-        BottomNavigationItem(
-            title = "Home",
-            selectedIcon = Icons.Filled.AddCircle,
-            unselectedIcon = Icons.Outlined.AddCircle,
-            hasNews = false
-        ),
-        BottomNavigationItem(
-            title = "Settings",
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings,
-            hasNews = false
-        )
-    )
-
+fun HomeScreen(navController: NavController)
+{
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -116,185 +116,64 @@ fun Greeting() {
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    //Information for UI
 
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEachIndexed { index, item ->
+                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
-        Scaffold(
-            bottomBar = {
-                NavigationBar {
-                    items.forEachIndexed { index, item ->
-                        val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
-                        NavigationBarItem(
-                            selected = selectedItemIndex == index,
-                            onClick = {
-                                selectedItemIndex = index
-                                navController.navigate(item.title.lowercase())
-                                {
-                                    popUpTo(navController.graph.findStartDestination().id)
-                                    {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
-                            label = {
-                                Text(text = item.title)
-                            },
-                            alwaysShowLabel = false,
-                            icon =
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            navController.navigate(item.title.lowercase())
                             {
-                                Icon(
-                                    imageVector = if(isSelected)
-                                    {
-                                        item.selectedIcon
-                                    }
-                                    else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
-
-                                BadgedBox(
-                                    badge =
-                                    {
-                                        if (item.hasNews)
-                                        {
-                                            Badge {
-                                                Badge()
-                                            }
+                                popUpTo(navController.graph.findStartDestination().id)
+                                {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected) {
+                                    item.selectedIcon
+                                } else item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews) {
+                                        Badge {
+                                            Badge()
                                         }
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = if (index == selectedItemIndex)
-                                        {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
                                 }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
                             }
-                        )
-                    }
-                }
-            }
-        ) {
-            padding ->
-            NavHost(navController, startDestination = "home")
-            {
-                composable("home")
-                {
-                    HomeScreen(text = "")
-                }
-                composable("map")
-                {
-                    MapScreen(text = "")
-                }
-                composable("create")
-                {
-                    CreateScreen(text = "")
-                }
-                composable("settings")
-                {
-                    SettingsScreen(text = "")
+                        }
+                    )
                 }
             }
         }
-    }
-}
-//Home Screen
-*/
-
-/*
-@Composable
-fun HomeScreen(
-    text: String,
-) {
-    val homeNavController = rememberNavController()
-    NavHost(homeNavController, startDestination = "home1")
-    {
+    ) {
 
     }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        )
-        {
-            Text(text = text)
-            Spacer(Modifier.height(16.dp))
-        }
-}
-
-
-@Composable
-fun MapScreen(
-    text: String,
-)
-{
-    val mapNavController = rememberNavController()
-    NavHost(mapNavController, startDestination = "map1")
-    {
-
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    )   {
-        Text(text = text)
-        Spacer(Modifier.height(16.dp))
-        }
-}
-
-@Composable
-fun CreateScreen(
-    text: String,
-)
-{
-    val createNavController = rememberNavController()
-    NavHost(createNavController, startDestination = "create1")
-    {
-
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    )   {
-        Text(text = text)
-        Spacer(Modifier.height(16.dp))
-        }
-}
-
-@Composable
-fun SettingsScreen(
-    text: String,
-)
-{
-    val settingsNavController = rememberNavController()
-    NavHost(settingsNavController, startDestination = "settings1")
-    {
-
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    )   {
-        Text(text = text)
-        Spacer(Modifier.height(16.dp))
-        }
-}*/
-
-@Composable
-fun HomeScreen(navController: NavController)
-{
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -333,11 +212,14 @@ fun HomeScreen(navController: NavController)
         Image(
             painter = painterResource(id = R.drawable.map),
             contentDescription = "Map"
-      )}
+        )
+    }
+
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(navController: NavController)
+fun MapScreen(navController: String)
 {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -352,6 +234,7 @@ fun MapScreen(navController: NavController)
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateScreen(navController: NavController)
 {
@@ -368,6 +251,7 @@ fun CreateScreen(navController: NavController)
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(navController: NavController)
 {
@@ -386,11 +270,38 @@ fun SettingsScreen(navController: NavController)
 
 
 //To show the App
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Home Preview")
 @Composable
-fun GreetingPreview()
+fun PreviewHomeView()
 {
     CrimeShieldTheme {
-        GreetingPreview("Android")
+        HomeScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "Map Preview")
+@Composable
+fun PreviewMapView()
+{
+    CrimeShieldTheme {
+        MapScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "Create Preview")
+@Composable
+fun PreviewCreateView()
+{
+    CrimeShieldTheme {
+        CreateScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "Settings Preview")
+@Composable
+fun PreviewSettingsView()
+{
+    CrimeShieldTheme {
+        SettingsScreen()
     }
 }
