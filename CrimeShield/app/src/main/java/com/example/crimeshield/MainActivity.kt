@@ -5,14 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
@@ -23,12 +28,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
@@ -179,27 +188,32 @@ fun HomeScreen(navController: NavController)
         modifier = Modifier
             .fillMaxSize()
     ) {
-        //Greeting("World")
-        Button(onClick = { navController.navigate("details") })
-        {
-            Text(text = "Go to Details")
-        }
         Text(
+            //modifier = Modifier.fillMaxSize()
+                //.padding(top = 30.dp, start = 120.dp),
             text = "CRIME SHIELD",
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(top = 20.dp)
         )
         Image(
             painter = painterResource(id = R.drawable.crimeshieldicon),
-            contentDescription = "Icon"
+            contentDescription = "Icon",
+            modifier = Modifier
+                .padding(top = 10.dp)
         )
         Text(
             text = "Create a Report!",
-            fontSize = 15.sp
+            fontSize = 25.sp,
+            modifier = Modifier
+                .padding(top = 10.dp)
         )
         Button(
             modifier = Modifier
-                .height(50.dp)
-                .width(190.dp),
+                .height(70.dp)
+                .width(190.dp)
+                .padding(top = 20.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = Color.White
@@ -211,10 +225,11 @@ fun HomeScreen(navController: NavController)
         }
         Image(
             painter = painterResource(id = R.drawable.map),
-            contentDescription = "Map"
+            contentDescription = "Map",
+            modifier = Modifier
+                .padding(top = 10.dp)
         )
     }
-
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -230,14 +245,16 @@ fun MapScreen(navController: NavController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
+        bottomBar =
+        {
+            NavigationBar{
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
-                        onClick = {
+                        onClick =
+                        {
                             selectedItemIndex = index
                             navController.navigate(item.title.lowercase())
                             {
@@ -284,18 +301,28 @@ fun MapScreen(navController: NavController)
             }
         }
     ) {
-
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(text = "Map Screen")
-        Button(onClick = { navController.navigate("home") })
+        Text(text = "Map",
+            fontSize = 35.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(20.dp))
+        /*Button(onClick = { navController.navigate("home") })
         {
             Text(text = "Back to Home")
-        }
+        }*/
+        Image(
+            painter = painterResource(id = R.drawable.map2),
+            contentDescription = "Map",
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 90.dp)
+        )
     }
 }
 
@@ -312,14 +339,16 @@ fun CreateScreen(navController: NavController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold(
-        bottomBar = {
+        bottomBar =
+        {
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
-                        onClick = {
+                        onClick =
+                        {
                             selectedItemIndex = index
                             navController.navigate(item.title.lowercase())
                             {
@@ -331,14 +360,16 @@ fun CreateScreen(navController: NavController)
                                 restoreState = true
                             }
                         },
-                        label = {
+                        label =
+                        {
                             Text(text = item.title)
                         },
                         alwaysShowLabel = false,
                         icon =
                         {
                             Icon(
-                                imageVector = if (isSelected) {
+                                imageVector = if (isSelected)
+                                {
                                     item.selectedIcon
                                 } else item.unselectedIcon,
                                 contentDescription = item.title
@@ -346,7 +377,8 @@ fun CreateScreen(navController: NavController)
                             BadgedBox(
                                 badge =
                                 {
-                                    if (item.hasNews) {
+                                    if (item.hasNews)
+                                    {
                                         Badge {
                                             Badge()
                                         }
@@ -373,9 +405,55 @@ fun CreateScreen(navController: NavController)
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(text = "Create Screen")
+        var textState1 by remember { mutableStateOf("Name") }
+        var textState2 by remember { mutableStateOf("Phone Number") }
+
+        Text(
+            text = "Crime Shield Report!",
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(20.dp),
+        )
+        TextField(
+            value = textState1,
+            onValueChange = { textState1 = it },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = "Person"
+                )
+            }
+            )
+        TextField(
+            value = textState2,
+            onValueChange = { textState2 = it },
+            modifier = Modifier
+                .padding(20.dp),
+            leadingIcon =
+            {
+                Icon(
+                    imageVector = Icons.Filled.Call,
+                    contentDescription = "Number"
+                )
+            }
+        )
+        Button(
+            modifier = Modifier
+                .height(50.dp)
+                .width(190.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red,
+                contentColor = Color.White
+            ),
+            onClick = { }
+        )
+        {
+            Text(text = "Submit")
+        }
     }
 }
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -409,14 +487,16 @@ fun SettingsScreen(navController: NavController)
                                 restoreState = true
                             }
                         },
-                        label = {
+                        label =
+                        {
                             Text(text = item.title)
                         },
                         alwaysShowLabel = false,
                         icon =
                         {
                             Icon(
-                                imageVector = if (isSelected) {
+                                imageVector = if (isSelected)
+                                {
                                     item.selectedIcon
                                 } else item.unselectedIcon,
                                 contentDescription = item.title
@@ -424,7 +504,8 @@ fun SettingsScreen(navController: NavController)
                             BadgedBox(
                                 badge =
                                 {
-                                    if (item.hasNews) {
+                                    if (item.hasNews)
+                                    {
                                         Badge {
                                             Badge()
                                         }
@@ -451,7 +532,13 @@ fun SettingsScreen(navController: NavController)
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(text = "Settings Screen")
+        Text(
+            modifier = Modifier.fillMaxSize()
+                .padding(top = 30.dp, start = 125.dp),
+            text = "Settings",
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp
+        )
     }
 }
 
