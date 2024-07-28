@@ -273,7 +273,8 @@ fun MapScreen(navController: NavController)
                         icon =
                         {
                             Icon(
-                                imageVector = if (isSelected) {
+                                imageVector = if (isSelected)
+                                {
                                     item.selectedIcon
                                 } else item.unselectedIcon,
                                 contentDescription = item.title
@@ -533,9 +534,362 @@ fun SettingsScreen(navController: NavController)
             .fillMaxSize()
     ) {
         Text(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(top = 30.dp, start = 125.dp),
             text = "Settings",
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp
+        )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun SetReportsScreen(navController: NavController)
+{
+    var selectedItemIndex by rememberSaveable()
+    {
+        mutableIntStateOf(0)
+    }
+
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEachIndexed { index, item ->
+                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
+
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            navController.navigate(item.title.lowercase())
+                            {
+                                popUpTo(navController.graph.findStartDestination().id)
+                                {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        label =
+                        {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                } else item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) {
+
+    }
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 30.dp, start = 80.dp),
+            text = "Sent Reports",
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp
+        )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun NewsScreen(navController: NavController)
+{
+    var selectedItemIndex by rememberSaveable()
+    {
+        mutableIntStateOf(0)
+    }
+
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEachIndexed { index, item ->
+                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
+
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            navController.navigate(item.title.lowercase())
+                            {
+                                popUpTo(navController.graph.findStartDestination().id)
+                                {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        label =
+                        {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                } else item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) {
+
+    }
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 30.dp, start = 150.dp),
+            text = "News",
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp
+        )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun MissingScreen(navController: NavController)
+{
+    var selectedItemIndex by rememberSaveable()
+    {
+        mutableIntStateOf(0)
+    }
+
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEachIndexed { index, item ->
+                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
+
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            navController.navigate(item.title.lowercase())
+                            {
+                                popUpTo(navController.graph.findStartDestination().id)
+                                {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        label =
+                        {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                } else item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) {
+
+    }
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 30.dp, start = 120.dp),
+            text = "Missing",
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp
+        )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun SexOffendersScreen(navController: NavController)
+{
+    var selectedItemIndex by rememberSaveable()
+    {
+        mutableIntStateOf(0)
+    }
+
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEachIndexed { index, item ->
+                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
+
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            navController.navigate(item.title.lowercase())
+                            {
+                                popUpTo(navController.graph.findStartDestination().id)
+                                {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        label =
+                        {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                } else item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex) {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) {
+
+    }
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 30.dp, start = 70.dp),
+            text = "Sex Offenders",
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp
         )
@@ -571,6 +925,15 @@ fun PreviewCreateView()
     }
 }
 
+@Preview(showBackground = true, name = "Sent Reports Preview")
+@Composable
+fun PreviewSentReportsView()
+{
+    CrimeShieldTheme {
+        SetReportsScreen(navController = rememberNavController())
+    }
+}
+
 @Preview(showBackground = true, name = "Settings Preview")
 @Composable
 fun PreviewSettingsView()
@@ -579,3 +942,32 @@ fun PreviewSettingsView()
         SettingsScreen(navController = rememberNavController())
     }
 }
+
+@Preview(showBackground = true, name = "News Preview")
+@Composable
+fun PreviewNewsView()
+{
+    CrimeShieldTheme {
+        NewsScreen(navController = rememberNavController())
+    }
+}
+
+@Preview(showBackground = true, name = "Missing Preview")
+@Composable
+fun PreviewMissingView()
+{
+    CrimeShieldTheme {
+        MissingScreen(navController = rememberNavController())
+    }
+}
+
+@Preview(showBackground = true, name = "Sex Offenders Preview")
+@Composable
+fun PreviewSexOffendersView()
+{
+    CrimeShieldTheme {
+        SexOffendersScreen(navController = rememberNavController())
+    }
+}
+
+
