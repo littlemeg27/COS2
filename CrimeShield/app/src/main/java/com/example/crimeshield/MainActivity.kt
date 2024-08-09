@@ -400,13 +400,20 @@ fun CreateScreen(navController: NavController)
         var textState1 by remember { mutableStateOf("Name") }
         var textState2 by remember { mutableStateOf("Phone Number") }
 
-        Text(IU
-            text = "Crime Shield Report!",
+        Text(
+            text = "Crime Shield",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(top = 40.dp),
-        )   qL; `CV `......................................................................V
+                .padding(top = 20.dp, bottom = 5.dp),
+        )
+        Text(
+            text = "Report!",
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(bottom = 20.dp),
+        )
         TextField(
             value = textState1,
             onValueChange = { textState1 = it },
@@ -422,8 +429,7 @@ fun CreateScreen(navController: NavController)
             onValueChange = { textState2 = it },
             modifier = Modifier
                 .padding(20.dp),
-            leadingIcon =
-            {
+            leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Call,
                     contentDescription = "Number"
