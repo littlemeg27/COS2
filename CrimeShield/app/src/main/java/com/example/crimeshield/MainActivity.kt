@@ -95,8 +95,6 @@ class MainActivity : ComponentActivity()
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
-                    //Greeting("Android")
-
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "home")
                     {
@@ -124,14 +122,16 @@ fun HomeScreen(navController: NavController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold(
-        bottomBar = {
-            NavigationBar {
+        bottomBar =
+        {
+            NavigationBar{
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
-                        onClick = {
+                        onClick =
+                        {
                             selectedItemIndex = index
                             navController.navigate(item.title.lowercase())
                             {
@@ -150,7 +150,8 @@ fun HomeScreen(navController: NavController)
                         icon =
                         {
                             Icon(
-                                imageVector = if (isSelected) {
+                                imageVector = if (isSelected)
+                                {
                                     item.selectedIcon
                                 } else item.unselectedIcon,
                                 contentDescription = item.title
@@ -178,7 +179,6 @@ fun HomeScreen(navController: NavController)
             }
         }
     ) {
-
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -308,10 +308,6 @@ fun MapScreen(navController: NavController)
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(20.dp))
-        /*Button(onClick = { navController.navigate("home") })
-        {
-            Text(text = "Back to Home")
-        }*/
         Image(
             painter = painterResource(id = R.drawable.map2),
             contentDescription = "Map",
@@ -404,13 +400,13 @@ fun CreateScreen(navController: NavController)
         var textState1 by remember { mutableStateOf("Name") }
         var textState2 by remember { mutableStateOf("Phone Number") }
 
-        Text(
+        Text(IU
             text = "Crime Shield Report!",
-            fontSize = 25.sp,
+            fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(20.dp),
-        )
+                .padding(top = 40.dp),
+        )   qL; `CV `......................................................................V
         TextField(
             value = textState1,
             onValueChange = { textState1 = it },
