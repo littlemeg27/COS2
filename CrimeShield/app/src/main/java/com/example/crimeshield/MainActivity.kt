@@ -3,6 +3,7 @@ package com.example.crimeshield
 
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -1037,7 +1039,8 @@ private fun getCurrentLocation(
     else Priority.PRIORITY_BALANCED_POWER_ACCURACY
 
     // Check if location permissions are granted
-    if (areLocationPermissionsGranted()) {
+    if (areLocationPermissionsGranted())
+    {
         // Retrieve the current location asynchronously
         fusedLocationClient.getCurrentLocation(
             accuracy, CancellationTokenSource().token,
@@ -1053,3 +1056,10 @@ private fun getCurrentLocation(
     }
 }
 
+private fun areLocationPermissionsGranted(): Boolean
+{
+    return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED)
+}
