@@ -1,5 +1,7 @@
 package com.example.crimeshield
 
+
+
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -44,7 +46,18 @@ import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 
+
+private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+//Initialize it where you need it
+fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
 data class BottomNavigationItem(
     val title: String,
@@ -80,9 +93,8 @@ val items = listOf(
         hasNews = false
     )
 )
-
-
 //Information for UI
+
 
 class MainActivity : ComponentActivity()
 {
@@ -91,7 +103,6 @@ class MainActivity : ComponentActivity()
         super.onCreate(savedInstanceState)
         setContent {
             CrimeShieldTheme{
-
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
@@ -967,4 +978,78 @@ fun PreviewSexOffendersView()
     }
 }
 
+//Start of Location Services
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun RequestLocationPermission(
+    onPermissionGranted: () -> Unit,
+    onPermissionDenied: () -> Unit,
+    onPermissionsRevoked: () -> Unit
+) {
+    // Initialize the state for managing multiple location permissions.
+    val permissionState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        )
+    )
+    // Use LaunchedEffect to handle permissions logic when the composition is launched.
+    LaunchedEffect(key1 = permissionState)
+    {
+        // Check if all previously granted permissions are revoked.
+        val allPermissionsRevoked =
+            permissionState.permissions.size == permissionState.revokedPermissions.size
+
+        // Filter permissions that need to be requested.
+        val permissionsToRequest = permissionState.permissions.filter {
+            !it.status.isGranted
+        }
+        // If there are permissions to request, launch the permission request.
+        if (permissionsToRequest.isNotEmpty()) permissionState.launchMultiplePermissionRequest()
+
+        // Execute callbacks based on permission status.
+        if (allPermissionsRevoked)
+        {
+            onPermissionsRevoked()
+        }
+        else
+        {
+            if (permissionState.allPermissionsGranted)
+            {
+                onPermissionGranted()
+            }
+            else
+            {
+                onPermissionDenied()
+            }
+        }
+    }
+}
+
+@SuppressLint("MissingPermission")
+private fun getCurrentLocation(
+    onGetCurrentLocationSuccess: (Pair<Double, Double>) -> Unit,
+    onGetCurrentLocationFailed: (Exception) -> Unit,
+    priority: Boolean = true
+) {
+    // Determine the accuracy priority based on the 'priority' parameter
+    val accuracy = if (priority) Priority.PRIORITY_HIGH_ACCURACY
+    else Priority.PRIORITY_BALANCED_POWER_ACCURACY
+
+    // Check if location permissions are granted
+    if (areLocationPermissionsGranted()) {
+        // Retrieve the current location asynchronously
+        fusedLocationClient.getCurrentLocation(
+            accuracy, CancellationTokenSource().token,
+        ).addOnSuccessListener { location ->
+            location?.let {
+                // If location is not null, invoke the success callback with latitude and longitude
+                onGetCurrentLocationSuccess(Pair(it.latitude, it.longitude))
+            }
+        }.addOnFailureListener { exception ->
+            // If an error occurs, invoke the failure callback with the exception
+            onGetCurrentLocationFailed(exception)
+        }
+    }
+}
 
