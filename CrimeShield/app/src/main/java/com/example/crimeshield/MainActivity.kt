@@ -334,19 +334,7 @@ fun MapScreen(navController: NavController)
 @Composable
 fun CreateScreen(navController: NavController, hasPermission: Boolean, onRequestPermission: () -> Unit)
 {
-    val cameraPermissionState: PermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
-    CreateScreen(
-        hasPermission = cameraPermissionState.status.isGranted,
-        onRequestPermission = cameraPermissionState::launchPermissionRequest
-    )
-
-    if (hasPermission)
-    {
-        CameraScreen()
-    } else {
-        NoPermissionScreen(onRequestPermission)
-    }
 
     var selectedItemIndex by rememberSaveable()
     {
@@ -990,5 +978,15 @@ fun PreviewSexOffendersView()
 {
     CrimeShieldTheme {
         SexOffendersScreen(navController = rememberNavController())
+    }
+}
+
+private fun hasRequiredPermissions(): Boolean
+{
+    return CAMERAX_PERMISSIONS.all
+    {
+        ContextCompat.checkSelfPermission(
+            applicationContext,
+            it) == PackageManager.PERMISSION_GRANTED
     }
 }
