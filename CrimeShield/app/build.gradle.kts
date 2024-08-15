@@ -67,6 +67,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     val cameraxVersion = "1.3.0-rc01"
 

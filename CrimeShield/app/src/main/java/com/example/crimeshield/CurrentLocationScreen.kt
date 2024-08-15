@@ -4,7 +4,6 @@ package com.example.crimeshield
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.renderscript.RenderScript.Priority
 import androidx.annotation.RequiresPermission
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
@@ -99,10 +98,10 @@ fun CurrentLocationContent(usePreciseLocation: Boolean) {
                 scope.launch(Dispatchers.IO) {
                     val priority = if (usePreciseLocation)
                     {
-                        Priority.PRIORITY_HIGH_ACCURACY
+                        com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
                     } else
                     {
-                        Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                        com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
                     }
                     val result = locationClient.getCurrentLocation(
                         priority,

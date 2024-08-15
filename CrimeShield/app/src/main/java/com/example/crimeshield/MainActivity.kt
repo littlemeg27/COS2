@@ -332,7 +332,7 @@ fun MapScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CreateScreen(navController: NavController, hasPermission: Boolean, onRequestPermission: () -> Unit)
+fun CreateScreen(navController: NavController)
 {
 
 
@@ -932,7 +932,7 @@ fun PreviewMapView()
 fun PreviewCreateView()
 {
     CrimeShieldTheme {
-        CreateScreen(navController = rememberNavController(), hasPermission = true, onRequestPermission = {} )
+        CreateScreen(navController = rememberNavController())
     }
 }
 
@@ -981,7 +981,7 @@ fun PreviewSexOffendersView()
     }
 }
 
-private fun hasRequiredPermissions(): Boolean
+/*private fun hasRequiredPermissions(): Boolean
 {
     return CAMERAX_PERMISSIONS.all
     {
@@ -989,4 +989,4 @@ private fun hasRequiredPermissions(): Boolean
             applicationContext,
             it) == PackageManager.PERMISSION_GRANTED
     }
-}
+}*/
