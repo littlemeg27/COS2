@@ -22,8 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.platform.base.PermissionBox
-import com.google.android.catalog.framework.annotations.Sample
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -96,12 +94,10 @@ fun CurrentLocationContent(usePreciseLocation: Boolean) {
             onClick = {
                 //To get more accurate or fresher device location use this method
                 scope.launch(Dispatchers.IO) {
-                    val priority = if (usePreciseLocation)
-                    {
-                        com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-                    } else
-                    {
-                        com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                    val priority = if (usePreciseLocation) {
+                        Priority.PRIORITY_HIGH_ACCURACY
+                    } else {
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY
                     }
                     val result = locationClient.getCurrentLocation(
                         priority,
