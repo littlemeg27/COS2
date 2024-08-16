@@ -1,7 +1,5 @@
-@file:OptIn(ExperimentalPermissionsApi::class)
+
 package com.example.crimeshield
-
-
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -35,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -42,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -49,16 +49,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.location.*
-
 
 data class BottomNavigationItem(
     val title: String,
@@ -102,6 +92,12 @@ class MainActivity : ComponentActivity()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+        if(!hasRequiredPermissions())
+        {
+            ActivityCompat.requestPermissions(
+                    this, CAMERAX_PERMISSIONS, 0
+                    )
+        }
         setContent {
             CrimeShieldTheme{
                 // A surface container using the 'background' color from the theme
@@ -110,20 +106,39 @@ class MainActivity : ComponentActivity()
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "home")
                     {
-                        composable("home") { HomeScreen(navController) }
-                        composable("details") { MapScreen(navController) }
-                        composable("create") { CreateScreen(navController) }
-                        composable("settings") { SettingsScreen(navController) }
+                        composable("home") { HomeScreen(navController, startDestination = "home") }
+                        composable("details") { MapScreen(navController, startDestination = "details") }
+                        composable("create") { CreateScreen(navController, startDestination = "create") }
+                        composable("settings") { SettingsScreen(navController, startDestination = "settings") }) }
                     }
                 }
             }
         }
     }
+    private fun hasRequiredPermissions(): Boolean{
+        return CAMERAX_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                it) == PackageManager.PERMISSION_GRANTED
+
+        }
+    }
+
+    companion object {
+        private val CAMERAX_PERMISSIONS = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
+    }
 }
+
+
+
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(navController: NavController)
+fun HomeScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -225,7 +240,7 @@ fun HomeScreen(navController: NavController)
                 containerColor = Color.Red,
                 contentColor = Color.White
             ),
-            onClick = { }
+            onClick = {}
         )
         {
             Text(text = "Create a Report!")
@@ -241,7 +256,7 @@ fun HomeScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(navController: NavController)
+fun MapScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -332,7 +347,7 @@ fun MapScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CreateScreen(navController: NavController)
+fun CreateScreen(navController: NavController, startDestination: String)
 {
 
 
@@ -413,6 +428,7 @@ fun CreateScreen(navController: NavController)
     ) {
         var textState1 by remember { mutableStateOf("Name") }
         var textState2 by remember { mutableStateOf("Phone Number") }
+        var textState3 by remember { mutableStateOf("Details") }
 
         Text(
             text = "Crime Shield",
@@ -450,6 +466,27 @@ fun CreateScreen(navController: NavController)
                 )
             }
         )
+        Button(
+            modifier = Modifier
+                .height(40.dp)
+                .width(150.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue,
+                contentColor = Color.White
+            ),
+            onClick = { }
+        )
+        {
+            Text(text = "Get Location")
+        }
+        TextField(
+            value = textState3,
+            onValueChange = { textState3 = it },
+            maxLines = Int.MAX_VALUE,
+            singleLine = false,
+            modifier = Modifier
+                .padding(20.dp)
+        )
 
         Button(
             modifier = Modifier
@@ -469,7 +506,7 @@ fun CreateScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(navController: NavController)
+fun SettingsScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -557,7 +594,7 @@ fun SettingsScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SetReportsScreen(navController: NavController)
+fun SentReportsScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -645,7 +682,7 @@ fun SetReportsScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NewsScreen(navController: NavController)
+fun NewsScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -733,7 +770,7 @@ fun NewsScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MissingScreen(navController: NavController)
+fun MissingScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -821,7 +858,7 @@ fun MissingScreen(navController: NavController)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SexOffendersScreen(navController: NavController)
+fun SexOffendersScreen(navController: NavController, startDestination: String)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -914,7 +951,7 @@ fun SexOffendersScreen(navController: NavController)
 fun PreviewHomeView()
 {
     CrimeShieldTheme {
-        HomeScreen(navController = rememberNavController())
+        HomeScreen(navController = rememberNavController(), startDestination = "Home" )
     }
 }
 
@@ -923,7 +960,7 @@ fun PreviewHomeView()
 fun PreviewMapView()
 {
     CrimeShieldTheme {
-        MapScreen(navController = rememberNavController())
+        MapScreen(navController = rememberNavController(), startDestination = "Map")
     }
 }
 
@@ -932,7 +969,7 @@ fun PreviewMapView()
 fun PreviewCreateView()
 {
     CrimeShieldTheme {
-        CreateScreen(navController = rememberNavController())
+        CreateScreen(navController = rememberNavController(), startDestination = "Create")
     }
 }
 
@@ -941,7 +978,7 @@ fun PreviewCreateView()
 fun PreviewSentReportsView()
 {
     CrimeShieldTheme {
-        SetReportsScreen(navController = rememberNavController())
+        SentReportsScreen(navController = rememberNavController(), startDestination = "Sent Reports")
     }
 }
 
@@ -950,7 +987,7 @@ fun PreviewSentReportsView()
 fun PreviewSettingsView()
 {
     CrimeShieldTheme {
-        SettingsScreen(navController = rememberNavController())
+        SettingsScreen(navController = rememberNavController(), startDestination = "Settings")
     }
 }
 
@@ -959,7 +996,7 @@ fun PreviewSettingsView()
 fun PreviewNewsView()
 {
     CrimeShieldTheme {
-        NewsScreen(navController = rememberNavController())
+        NewsScreen(navController = rememberNavController(), startDestination = "News")
     }
 }
 
@@ -968,7 +1005,7 @@ fun PreviewNewsView()
 fun PreviewMissingView()
 {
     CrimeShieldTheme {
-        MissingScreen(navController = rememberNavController())
+        MissingScreen(navController = rememberNavController(), startDestination = "Missing")
     }
 }
 
@@ -977,16 +1014,6 @@ fun PreviewMissingView()
 fun PreviewSexOffendersView()
 {
     CrimeShieldTheme {
-        SexOffendersScreen(navController = rememberNavController())
+        SexOffendersScreen(navController = rememberNavController(), startDestination = "Sex Offenders")
     }
 }
-
-/*private fun hasRequiredPermissions(): Boolean
-{
-    return CAMERAX_PERMISSIONS.all
-    {
-        ContextCompat.checkSelfPermission(
-            applicationContext,
-            it) == PackageManager.PERMISSION_GRANTED
-    }
-}*/
