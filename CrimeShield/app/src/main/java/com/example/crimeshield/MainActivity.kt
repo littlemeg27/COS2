@@ -5,10 +5,13 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -98,6 +101,7 @@ val items = listOf(
 
 class MainActivity : ComponentActivity()
 {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -121,7 +125,9 @@ class MainActivity : ComponentActivity()
                 BottomSheetScaffold(
                     scaffoldState = scaffoldState,
                     sheetContent = {
-                        BottomSheetContent()
+                        PhotoBottomSheetContent(
+                            bitmaps = 
+                        )
                     },
                     sheetPeekHeight = 0.dp,
                 ){
@@ -158,12 +164,10 @@ class MainActivity : ComponentActivity()
                                 .align(Alignment.BottomCenter)
                                 .padding(16.dp),
                             horizontalArrangement = Arrangement.SpaceAround
-
                         ){
                             IconButton(onClick = {
 
                                 }
-
                             ) {
                                 Icon(imageVector = Icons.Default.Photo,
                                     contentDescription = "Open Gallery"
@@ -172,7 +176,6 @@ class MainActivity : ComponentActivity()
                             IconButton(onClick = {
 
                             }
-
                             ) {
                                 Icon(imageVector = Icons.Default.PhotoCamera,
                                     contentDescription = "Take Photo"
@@ -199,21 +202,24 @@ class MainActivity : ComponentActivity()
     private fun takePhoto(
         controller: LifecycleCameraController,
         onPhotoTaken: (Bitmap) -> Unit
-    {
-        controller.takePicture(ContextCompat.getMainExecutor(applicationContext),
+    ){
+        controller.takePicture(
+        ContextCompat.getMainExecutor(applicationContext),
             object :OnImageCapturedCallback(){
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
+
+                    onPhotoTaken(image.toBitmap())
+
                 }
                 override fun onError(exception: ImageCaptureException) {
                     super.onError(exception)
+
+                    Log.e("Camera", "Failed to take photo", exception)
                 }
-
-            }            }
-        {
+            }
+        )
     }
-
-    )
 
     private fun hasRequiredPermissions(): Boolean{
         return CAMERAX_PERMISSIONS.all {
