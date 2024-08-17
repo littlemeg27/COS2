@@ -3,13 +3,22 @@ package com.example.crimeshield
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture.OnImageCapturedCallback
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -100,6 +109,78 @@ class MainActivity : ComponentActivity()
         }
         setContent {
             CrimeShieldTheme{
+                val scaffoldState = rememberBottomSheetScaffoldState()
+                val controller = remember {
+                    LifecycleCameraController(applicationContext).apply {
+                       setEnabledUseCases(
+                           CameraController.IMAGE_CAPTURE or
+                           CameraController.VIDEO_CAPTURE
+                       )
+                    }
+                }
+                BottomSheetScaffold(
+                    scaffoldState = scaffoldState,
+                    sheetContent = {
+                        BottomSheetContent()
+                    },
+                    sheetPeekHeight = 0.dp,
+                ){
+                    padding ->
+                    Box(modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                    ){
+                        CameraPreview(controller = controller,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                        IconButton(onClick =
+                        {
+                            controller.cameraSelector =
+                                if(controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA)
+                                {
+                                    CameraSelector.DEFAULT_FRONT_CAMERA
+                                } else {
+                                    CameraSelector.DEFAULT_BACK_CAMERA
+                                }
+                        },
+                            modifier = Modifier
+                                .offset(16.dp, 16.dp)
+                        ) {
+                           Icon(
+                               imageVector = Icons.Default.Cameraswitch,
+                               contentDescription = "Switch Camera"
+                           )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .align(Alignment.BottomCenter)
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
+
+                        ){
+                            IconButton(onClick = {
+
+                                }
+
+                            ) {
+                                Icon(imageVector = Icons.Default.Photo,
+                                    contentDescription = "Open Gallery"
+                                )
+                            }
+                            IconButton(onClick = {
+
+                            }
+
+                            ) {
+                                Icon(imageVector = Icons.Default.PhotoCamera,
+                                    contentDescription = "Take Photo"
+                                )
+                            }
+                        }
+                    }
+
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
@@ -115,6 +196,25 @@ class MainActivity : ComponentActivity()
             }
         }
     }
+    private fun takePhoto(
+        controller: LifecycleCameraController,
+        onPhotoTaken: (Bitmap) -> Unit
+    {
+        controller.takePicture(ContextCompat.getMainExecutor(applicationContext),
+            object :OnImageCapturedCallback(){
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    super.onCaptureSuccess(image)
+                }
+                override fun onError(exception: ImageCaptureException) {
+                    super.onError(exception)
+                }
+
+            }            }
+        {
+    }
+
+    )
+
     private fun hasRequiredPermissions(): Boolean{
         return CAMERAX_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(
