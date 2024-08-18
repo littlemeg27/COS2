@@ -4,6 +4,7 @@ package com.example.crimeshield
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -12,6 +13,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.impl.utils.MatrixExt.postRotate
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -37,11 +40,13 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -61,6 +67,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import kotlinx.coroutines.launch
 
 data class BottomNavigationItem(
     val title: String,
@@ -113,6 +120,7 @@ class MainActivity : ComponentActivity()
         }
         setContent {
             CrimeShieldTheme{
+                val scope = rememberCoroutineScope()
                 val scaffoldState = rememberBottomSheetScaffoldState()
                 val controller = remember {
                     LifecycleCameraController(applicationContext).apply {
@@ -122,11 +130,16 @@ class MainActivity : ComponentActivity()
                        )
                     }
                 }
+                val viewModel = viewModel<MainViewModel>()
+                val bitmaps by viewModel.bitmaps.collectAsState()
+
                 BottomSheetScaffold(
                     scaffoldState = scaffoldState,
                     sheetContent = {
                         PhotoBottomSheetContent(
-                            bitmaps = 
+                            bitmaps = bitmaps,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         )
                     },
                     sheetPeekHeight = 0.dp,
@@ -166,7 +179,9 @@ class MainActivity : ComponentActivity()
                             horizontalArrangement = Arrangement.SpaceAround
                         ){
                             IconButton(onClick = {
-
+                                scope.launch {
+                                    scaffoldState.bottomSheetState.expand()
+                                }
                                 }
                             ) {
                                 Icon(imageVector = Icons.Default.Photo,
@@ -174,7 +189,9 @@ class MainActivity : ComponentActivity()
                                 )
                             }
                             IconButton(onClick = {
-
+                                takePhoto(
+                                    controller = controller,
+                                    onPhotoTaken = viewModel::onPhotoTaken)
                             }
                             ) {
                                 Icon(imageVector = Icons.Default.PhotoCamera,
@@ -209,8 +226,11 @@ class MainActivity : ComponentActivity()
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
 
-                    onPhotoTaken(image.toBitmap())
+                    val matrix = Matrix().apply {
+                        postRotate(image.imageInfo.rotationDegrees.toFloat())
+                    }
 
+                    onPhotoTaken(image.toBitmap())
                 }
                 override fun onError(exception: ImageCaptureException) {
                     super.onError(exception)
