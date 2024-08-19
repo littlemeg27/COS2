@@ -11,5 +11,7 @@ class MainViewModel : ViewModel() {
     private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
     val bitmaps = _bitmaps.asStateFlow()
 
-    fun
+    fun onTakePhoto(bitmap: Bitmap) {
+        _bitmaps.value += bitmap
+    }
 }

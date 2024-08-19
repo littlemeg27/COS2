@@ -143,7 +143,8 @@ class MainActivity : ComponentActivity()
                         )
                     },
                     sheetPeekHeight = 0.dp,
-                ){
+                )
+                {
                     padding ->
                     Box(modifier = Modifier
                         .padding(padding)
@@ -184,21 +185,25 @@ class MainActivity : ComponentActivity()
                                 }
                                 }
                             ) {
-                                Icon(imageVector = Icons.Default.Photo,
+                                Icon(
+                                    imageVector = Icons.Default.Photo,
                                     contentDescription = "Open Gallery"
                                 )
                             }
-                            IconButton(onClick = {
-                                takePhoto(
-                                    controller = controller,
-                                    onPhotoTaken = viewModel::onPhotoTaken)
-                            }
+                            IconButton(
+                                onClick = {
+                                    takePhoto(
+                                        controller = controller,
+                                        onPhotoTaken = viewModel::onTakePhoto
+                                    )
+                                }
                             ) {
                                 Icon(imageVector = Icons.Default.PhotoCamera,
                                     contentDescription = "Take Photo"
                                 )
                             }
                         }
+                    }
                     }
 
                 // A surface container using the 'background' color from the theme
@@ -210,56 +215,63 @@ class MainActivity : ComponentActivity()
                         composable("home") { HomeScreen(navController, startDestination = "home") }
                         composable("details") { MapScreen(navController, startDestination = "details") }
                         composable("create") { CreateScreen(navController, startDestination = "create") }
-                        composable("settings") { SettingsScreen(navController, startDestination = "settings") }) }
+                        composable("settings") { SettingsScreen(navController, startDestination = "settings") }
                     }
                 }
             }
         }
     }
+
     private fun takePhoto(
         controller: LifecycleCameraController,
         onPhotoTaken: (Bitmap) -> Unit
-    ){
+    ) {
         controller.takePicture(
-        ContextCompat.getMainExecutor(applicationContext),
-            object :OnImageCapturedCallback(){
+            ContextCompat.getMainExecutor(applicationContext),
+            object : OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     super.onCaptureSuccess(image)
 
                     val matrix = Matrix().apply {
                         postRotate(image.imageInfo.rotationDegrees.toFloat())
                     }
+                    val rotatedBitmap = Bitmap.createBitmap(
+                        image.toBitmap(),
+                        0,
+                        0,
+                        image.width,
+                        image.height,
+                        matrix,
+                        true
+                    )
 
-                    onPhotoTaken(image.toBitmap())
+                    onPhotoTaken(rotatedBitmap)
                 }
+
                 override fun onError(exception: ImageCaptureException) {
                     super.onError(exception)
-
-                    Log.e("Camera", "Failed to take photo", exception)
+                    Log.e("Camera", "Couldn't take photo: ", exception)
                 }
             }
         )
     }
 
-    private fun hasRequiredPermissions(): Boolean{
+    private fun hasRequiredPermissions(): Boolean {
         return CAMERAX_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(
                 applicationContext,
-                it) == PackageManager.PERMISSION_GRANTED
-
+                it
+            ) == PackageManager.PERMISSION_GRANTED
         }
     }
 
     companion object {
         private val CAMERAX_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.RECORD_AUDIO,
         )
     }
 }
-
-
-
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
