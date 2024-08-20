@@ -67,6 +67,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import android.Manifest
+import android.content.Context
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PhotoCamera
@@ -79,6 +80,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 
 
 data class BottomNavigationItem(
@@ -132,6 +134,8 @@ class MainActivity : ComponentActivity()
         }
         setContent {
             CrimeShieldTheme{
+
+                // Start of CameraX Code
                 val scope = rememberCoroutineScope()
                 val scaffoldState = rememberBottomSheetScaffoldState()
                 val controller = remember {
@@ -216,13 +220,13 @@ class MainActivity : ComponentActivity()
                             }
                         }
                     }
-                }
+                }  // End of CameraX Code
 
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
                     val navController = rememberNavController()
-                    NavHost(navController, startDestination = "home")
+                    NavHost(navController, startDestination = "home") //NavBar for the bottom of the screen
                     {
                         composable("home") { HomeScreen(navController, startDestination = "home") }
                         composable("details") { MapScreen(navController, startDestination = "details") }
@@ -234,7 +238,7 @@ class MainActivity : ComponentActivity()
         }
     }
 
-    private fun takePhoto(
+    private fun takePhoto( //Taking a photo
         controller: LifecycleCameraController,
         onPhotoTaken: (Bitmap) -> Unit
     ) {
@@ -268,7 +272,7 @@ class MainActivity : ComponentActivity()
         )
     }
 
-    private fun hasRequiredPermissions(): Boolean {
+    private fun hasRequiredPermissions(): Boolean { //Checking if the app has the required permissions
         return CAMERAX_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(
                 applicationContext,
@@ -277,7 +281,7 @@ class MainActivity : ComponentActivity()
         }
     }
 
-    companion object {
+    companion object { //Permissions for the app
         private val CAMERAX_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
@@ -288,7 +292,11 @@ class MainActivity : ComponentActivity()
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(navController: NavController, startDestination: String)
+fun HomeScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -298,7 +306,7 @@ fun HomeScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar =
         {
             NavigationBar{
@@ -369,7 +377,7 @@ fun HomeScreen(navController: NavController, startDestination: String)
             modifier = Modifier
                 .padding(top = 20.dp)
         )
-        Image(
+        Image( //Crime Shield Icon
             painter = painterResource(id = R.drawable.crimeshieldicon),
             contentDescription = "Icon",
             modifier = Modifier
@@ -381,7 +389,7 @@ fun HomeScreen(navController: NavController, startDestination: String)
             modifier = Modifier
                 .padding(top = 10.dp)
         )
-        Button(
+        Button( //Button to create a report
             modifier = Modifier
                 .height(70.dp)
                 .width(190.dp)
@@ -395,7 +403,7 @@ fun HomeScreen(navController: NavController, startDestination: String)
         {
             Text(text = "Create a Report!")
         }
-        Image(
+        Image( //Place holder for map
             painter = painterResource(id = R.drawable.map),
             contentDescription = "Map",
             modifier = Modifier
@@ -406,7 +414,11 @@ fun HomeScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(navController: NavController, startDestination: String)
+fun MapScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -416,7 +428,7 @@ fun MapScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar =
         {
             NavigationBar{
@@ -497,7 +509,11 @@ fun MapScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CreateScreen(navController: NavController, startDestination: String)
+fun CreateScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+    )
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -507,7 +523,7 @@ fun CreateScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar =
         {
             NavigationBar {
@@ -592,7 +608,7 @@ fun CreateScreen(navController: NavController, startDestination: String)
             modifier = Modifier
                 .padding(bottom = 20.dp),
         )
-        TextField(
+        TextField( //Text Field for name
             value = textState1,
             onValueChange = { textState1 = it },
             leadingIcon = {
@@ -602,7 +618,7 @@ fun CreateScreen(navController: NavController, startDestination: String)
                 )
             }
         )
-        TextField(
+        TextField( //Text Field for phone number
             value = textState2,
             onValueChange = { textState2 = it },
             modifier = Modifier
@@ -614,7 +630,7 @@ fun CreateScreen(navController: NavController, startDestination: String)
                 )
             }
         )
-        Button(
+        Button( //Button to get location
             modifier = Modifier
                 .height(40.dp)
                 .width(150.dp),
@@ -627,7 +643,7 @@ fun CreateScreen(navController: NavController, startDestination: String)
         {
             Text(text = "Get Location")
         }
-        TextField(
+        TextField( //Text Field for details
             value = textState3,
             onValueChange = { textState3 = it },
             maxLines = Int.MAX_VALUE,
@@ -636,9 +652,9 @@ fun CreateScreen(navController: NavController, startDestination: String)
                 .padding(20.dp)
         )
 
-        CameraPreview()
+        CameraPreview() //Getting the Camera to show
 
-        Button(
+        Button( //Button to submit report
             modifier = Modifier
                 .height(50.dp)
                 .width(190.dp),
@@ -656,7 +672,12 @@ fun CreateScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(navController: NavController, startDestination: String)
+fun SettingsScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+
+    )
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -666,7 +687,7 @@ fun SettingsScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, item ->
@@ -744,7 +765,11 @@ fun SettingsScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SentReportsScreen(navController: NavController, startDestination: String)
+fun SentReportsScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -754,7 +779,7 @@ fun SentReportsScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, item ->
@@ -832,7 +857,11 @@ fun SentReportsScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NewsScreen(navController: NavController, startDestination: String)
+fun NewsScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -844,7 +873,7 @@ fun NewsScreen(navController: NavController, startDestination: String)
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar { //Navigation Bar for the bottom of the screen
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
@@ -920,7 +949,11 @@ fun NewsScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MissingScreen(navController: NavController, startDestination: String)
+fun MissingScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -930,7 +963,7 @@ fun MissingScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, item ->
@@ -1008,7 +1041,11 @@ fun MissingScreen(navController: NavController, startDestination: String)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SexOffendersScreen(navController: NavController, startDestination: String)
+fun SexOffendersScreen(
+    context: Context,
+    navController: NavController,
+    startDestination: String,
+)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -1018,9 +1055,9 @@ fun SexOffendersScreen(navController: NavController, startDestination: String)
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
-            NavigationBar {
+            NavigationBar { //Navigation Bar for the bottom of the screen
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
@@ -1094,9 +1131,8 @@ fun SexOffendersScreen(navController: NavController, startDestination: String)
     }
 }
 
-
 //To show the App
-@Preview(showBackground = true, name = "Home Preview")
+@Preview(showBackground = true, name = "Home Preview") //Preview for Home Screen
 @Composable
 fun PreviewHomeView()
 {
@@ -1105,16 +1141,16 @@ fun PreviewHomeView()
     }
 }
 
-@Preview(showBackground = true, name = "Map Preview")
+@Preview(showBackground = true, name = "Map Preview") //Preview for Map Screen
 @Composable
 fun PreviewMapView()
 {
     CrimeShieldTheme {
-        MapScreen(navController = rememberNavController(), startDestination = "Map")
+        MapScreen(context = Context, navController = rememberNavController(), startDestination = "Map")
     }
 }
 
-@Preview(showBackground = true, name = "Create Preview")
+@Preview(showBackground = true, name = "Create Preview") //Preview for Create Screen
 @Composable
 fun PreviewCreateView()
 {
@@ -1123,7 +1159,7 @@ fun PreviewCreateView()
     }
 }
 
-@Preview(showBackground = true, name = "Sent Reports Preview")
+@Preview(showBackground = true, name = "Sent Reports Preview") //Preview for Sent Reports Screen
 @Composable
 fun PreviewSentReportsView()
 {
@@ -1132,7 +1168,7 @@ fun PreviewSentReportsView()
     }
 }
 
-@Preview(showBackground = true, name = "Settings Preview")
+@Preview(showBackground = true, name = "Settings Preview") //Preview for Settings Screen
 @Composable
 fun PreviewSettingsView()
 {
@@ -1141,7 +1177,7 @@ fun PreviewSettingsView()
     }
 }
 
-@Preview(showBackground = true, name = "News Preview")
+@Preview(showBackground = true, name = "News Preview") //Preview for News Screen
 @Composable
 fun PreviewNewsView()
 {
@@ -1150,7 +1186,7 @@ fun PreviewNewsView()
     }
 }
 
-@Preview(showBackground = true, name = "Missing Preview")
+@Preview(showBackground = true, name = "Missing Preview") //Preview for Missing Screen
 @Composable
 fun PreviewMissingView()
 {
@@ -1159,7 +1195,7 @@ fun PreviewMissingView()
     }
 }
 
-@Preview(showBackground = true, name = "Sex Offenders Preview")
+@Preview(showBackground = true, name = "Sex Offenders Preview") //Preview for Sex Offenders Screen
 @Composable
 fun PreviewSexOffendersView()
 {
