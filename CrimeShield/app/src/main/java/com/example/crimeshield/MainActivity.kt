@@ -13,7 +13,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.impl.utils.MatrixExt.postRotate
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
@@ -50,7 +49,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -68,6 +66,20 @@ import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
+import android.Manifest
+import androidx.compose.material.icons.filled.Cameraswitch
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.ui.unit.dp
+
 
 data class BottomNavigationItem(
     val title: String,
@@ -204,7 +216,7 @@ class MainActivity : ComponentActivity()
                             }
                         }
                     }
-                    }
+                }
 
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
@@ -487,8 +499,6 @@ fun MapScreen(navController: NavController, startDestination: String)
 @Composable
 fun CreateScreen(navController: NavController, startDestination: String)
 {
-
-
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -625,6 +635,8 @@ fun CreateScreen(navController: NavController, startDestination: String)
             modifier = Modifier
                 .padding(20.dp)
         )
+
+        CameraPreview()
 
         Button(
             modifier = Modifier
