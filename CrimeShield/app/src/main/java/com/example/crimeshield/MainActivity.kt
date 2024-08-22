@@ -37,6 +37,9 @@ import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.filled.Cameraswitch
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -67,10 +70,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import android.Manifest
-import android.content.Context
-import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -80,8 +79,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-
 
 data class BottomNavigationItem(
     val title: String,
@@ -228,14 +225,18 @@ class MainActivity : ComponentActivity()
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "home") //NavBar for the bottom of the screen
                     {
-                        composable("home") { HomeScreen(navController, startDestination = "home") }
-                        composable("details") { MapScreen(navController, startDestination = "details") }
-                        composable("create") { CreateScreen(navController, startDestination = "create") }
-                        composable("settings") { SettingsScreen(navController, startDestination = "settings") }
+                        composable("home") { HomeScreen(Boolean, navigate =  , navController, startDestination = "home") }
+                        composable("details") { MapScreen(Boolean, navigate =  , navController, startDestination = "details") }
+                        composable("create") { CreateScreen(Boolean, navigate =  , navController, startDestination = "create") }
+                        composable("settings") { SettingsScreen(Boolean, navigate = , navController, startDestination = "settings") }
                     }
                 }
             }
         }
+        /* NavigateBack: Boolean,
+    navigate: () -> Unit,
+    navController: NavController,
+    startDestination: String,*/
     }
 
     private fun takePhoto( //Taking a photo
@@ -260,7 +261,6 @@ class MainActivity : ComponentActivity()
                         matrix,
                         true
                     )
-
                     onPhotoTaken(rotatedBitmap)
                 }
 
@@ -293,7 +293,8 @@ class MainActivity : ComponentActivity()
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
-    context: Context,
+    NavigateBack: Boolean.Companion,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 )
@@ -331,32 +332,36 @@ fun HomeScreen(
                         label = {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
-                                {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews) {
-                                        Badge {
-                                            Badge()
-                                        }
-                                    }
-                                }
-                            ) {
+                            if (NavigateBack)
+                            {
                                 Icon(
-                                    imageVector = if (index == selectedItemIndex) {
+                                    imageVector = if (isSelected)
+                                    {
                                         item.selectedIcon
+
                                     } else item.unselectedIcon,
                                     contentDescription = item.title
                                 )
+                                BadgedBox(
+                                    badge =
+                                    {
+                                        if (item.hasNews) {
+                                            Badge {
+                                                Badge()
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = if (index == selectedItemIndex) {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                }
                             }
                         }
                     )
@@ -415,7 +420,8 @@ fun HomeScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MapScreen(
-    context: Context,
+    NavigateBack: Boolean.Companion,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 )
@@ -453,33 +459,40 @@ fun MapScreen(
                         label = {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
+                            if (NavigateBack)
+                            {
+                                IconButton(onClick = navigate)
                                 {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews) {
-                                        Badge {
-                                            Badge()
+                                    Icon(
+                                        imageVector = if (isSelected)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                    BadgedBox(
+                                        badge =
+                                        {
+                                            if (item.hasNews) {
+                                                Badge {
+                                                    Badge()
+                                                }
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
+
                         }
                     )
                 }
@@ -510,7 +523,8 @@ fun MapScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateScreen(
-    context: Context,
+    NavigateBack: Boolean.Companion,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
     )
@@ -549,34 +563,38 @@ fun CreateScreen(
                         {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
-                                {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
-                                    {
-                                        Badge {
-                                            Badge()
-                                        }
-                                    }
-                                }
-                            ) {
+                            if (NavigateBack)
+                            {
                                 Icon(
-                                    imageVector = if (index == selectedItemIndex) {
+                                    imageVector = if (isSelected)
+                                    {
                                         item.selectedIcon
                                     } else item.unselectedIcon,
                                     contentDescription = item.title
                                 )
+                                BadgedBox(
+                                    badge =
+                                    {
+                                        if (item.hasNews)
+                                        {
+                                            Badge {
+                                                Badge()
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = if (index == selectedItemIndex) {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                }
                             }
+
                         }
                     )
                 }
@@ -673,7 +691,8 @@ fun CreateScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(
-    context: Context,
+    NavigateBack: Boolean.Companion,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 
@@ -711,34 +730,41 @@ fun SettingsScreen(
                         {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
+                            if (NavigateBack)
+                            {
+                                IconButton(onClick = navigate)
                                 {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
-                                    {
-                                        Badge {
-                                            Badge()
+                                    Icon(
+                                        imageVector = if (isSelected)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                    BadgedBox(
+                                        badge =
+                                        {
+                                            if (item.hasNews)
+                                            {
+                                                Badge {
+                                                    Badge()
+                                                }
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
+
                         }
                     )
                 }
@@ -766,7 +792,8 @@ fun SettingsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SentReportsScreen(
-    context: Context,
+    NavigateBack: Boolean,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 )
@@ -803,34 +830,41 @@ fun SentReportsScreen(
                         {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
+                            if (NavigateBack)
+                            {
+                                IconButton(onClick = navigate)
                                 {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
-                                    {
-                                        Badge {
-                                            Badge()
+                                    Icon(
+                                        imageVector = if (isSelected)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                    BadgedBox(
+                                        badge =
+                                        {
+                                            if (item.hasNews)
+                                            {
+                                                Badge {
+                                                    Badge()
+                                                }
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
+
                         }
                     )
                 }
@@ -858,7 +892,8 @@ fun SentReportsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsScreen(
-    context: Context,
+    NavigateBack: Boolean,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 )
@@ -871,9 +906,9 @@ fun NewsScreen(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    Scaffold(
+    Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
-            NavigationBar { //Navigation Bar for the bottom of the screen
+            NavigationBar {
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
@@ -895,33 +930,39 @@ fun NewsScreen(
                         {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
+                            if (NavigateBack)
+                            {
+                                IconButton(onClick = navigate)
                                 {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
-                                    {
-                                        Badge {
-                                            Badge()
+                                    Icon(
+                                        imageVector = if (isSelected)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                    BadgedBox(
+                                        badge =
+                                        {
+                                            if (item.hasNews)
+                                            {
+                                                Badge {
+                                                    Badge()
+                                                }
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
                         }
                     )
@@ -950,7 +991,8 @@ fun NewsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MissingScreen(
-    context: Context,
+    NavigateBack: Boolean,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 )
@@ -987,33 +1029,39 @@ fun MissingScreen(
                         {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
+                            if (NavigateBack)
+                            {
+                                IconButton(onClick = navigate)
                                 {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
-                                    {
-                                        Badge {
-                                            Badge()
+                                    Icon(
+                                        imageVector = if (isSelected)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                    BadgedBox(
+                                        badge =
+                                        {
+                                            if (item.hasNews)
+                                            {
+                                                Badge {
+                                                    Badge()
+                                                }
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
                         }
                     )
@@ -1042,7 +1090,8 @@ fun MissingScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SexOffendersScreen(
-    context: Context,
+    NavigateBack: Boolean,
+    navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
 )
@@ -1079,33 +1128,39 @@ fun SexOffendersScreen(
                         {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+                        alwaysShowLabel = true,
                         icon =
                         {
-                            Icon(
-                                imageVector = if (isSelected)
+                            if (NavigateBack)
+                            {
+                                IconButton(onClick = navigate)
                                 {
-                                    item.selectedIcon
-                                } else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                            BadgedBox(
-                                badge =
-                                {
-                                    if (item.hasNews)
-                                    {
-                                        Badge {
-                                            Badge()
+                                    Icon(
+                                        imageVector = if (isSelected)
+                                        {
+                                            item.selectedIcon
+                                        } else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                    BadgedBox(
+                                        badge =
+                                        {
+                                            if (item.hasNews)
+                                            {
+                                                Badge {
+                                                    Badge()
+                                                }
+                                            }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = if (index == selectedItemIndex) {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
                             }
                         }
                     )
@@ -1146,7 +1201,7 @@ fun PreviewHomeView()
 fun PreviewMapView()
 {
     CrimeShieldTheme {
-        MapScreen(context = Context, navController = rememberNavController(), startDestination = "Map")
+        MapScreen(navController = rememberNavController(), startDestination = "Map")
     }
 }
 
