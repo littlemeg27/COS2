@@ -225,10 +225,10 @@ class MainActivity : ComponentActivity()
                     val navController = rememberNavController()
                     NavHost(navController, startDestination = "home") //NavBar for the bottom of the screen
                     {
-                        composable("home") { HomeScreen(Boolean, navigate =  , navController, startDestination = "home") }
-                        composable("details") { MapScreen(Boolean, navigate =  , navController, startDestination = "details") }
-                        composable("create") { CreateScreen(Boolean, navigate =  , navController, startDestination = "create") }
-                        composable("settings") { SettingsScreen(Boolean, navigate = , navController, startDestination = "settings") }
+                        composable("home") { HomeScreen(navigateBack = false, navigate =  {}, navController, startDestination = "home") }
+                        composable("details") { MapScreen(navigateBack = false, navigate =  {}, navController, startDestination = "details") }
+                        composable("create") { CreateScreen(navigateBack = false, navigate = {}, navController, startDestination = "create") }
+                        composable("settings") { SettingsScreen(navigateBack = false, navigate = {}, navController, startDestination = "settings") }
                     }
                 }
             }
@@ -292,7 +292,7 @@ class MainActivity : ComponentActivity()
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -333,7 +333,7 @@ fun HomeScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 Icon(
                                     imageVector = if (isSelected)
@@ -418,7 +418,7 @@ fun HomeScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MapScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -460,7 +460,7 @@ fun MapScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 IconButton(onClick = navigate)
                                 {
@@ -520,7 +520,7 @@ fun MapScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -563,7 +563,7 @@ fun CreateScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 Icon(
                                     imageVector = if (isSelected)
@@ -667,7 +667,7 @@ fun CreateScreen(
                 .padding(20.dp)
         )
 
-        CameraPreview() //Getting the Camera to show
+        //CameraPreview() //Getting the Camera to show
 
         Button( //Button to submit report
             modifier = Modifier
@@ -688,7 +688,7 @@ fun CreateScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -730,7 +730,7 @@ fun SettingsScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 IconButton(onClick = navigate)
                                 {
@@ -789,7 +789,7 @@ fun SettingsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SentReportsScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -830,7 +830,7 @@ fun SentReportsScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 IconButton(onClick = navigate)
                                 {
@@ -861,14 +861,12 @@ fun SentReportsScreen(
                                     }
                                 }
                             }
-
                         }
                     )
                 }
             }
         }
     ) {
-
     }
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -889,7 +887,7 @@ fun SentReportsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -930,7 +928,7 @@ fun NewsScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 IconButton(onClick = navigate)
                                 {
@@ -988,7 +986,7 @@ fun NewsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MissingScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -1029,7 +1027,7 @@ fun MissingScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 IconButton(onClick = navigate)
                                 {
@@ -1087,7 +1085,7 @@ fun MissingScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SexOffendersScreen(
-    NavigateBack: Boolean.Companion,
+    navigateBack: Boolean,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -1128,7 +1126,7 @@ fun SexOffendersScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (NavigateBack)
+                            if (navigateBack)
                             {
                                 IconButton(onClick = navigate)
                                 {
@@ -1189,7 +1187,7 @@ fun SexOffendersScreen(
 fun PreviewHomeView()
 {
     CrimeShieldTheme {
-        HomeScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Home" )
+        HomeScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Home" )
     }
 }
 
@@ -1198,7 +1196,7 @@ fun PreviewHomeView()
 fun PreviewMapView()
 {
     CrimeShieldTheme {
-        MapScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Map")
+        MapScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Map")
     }
 }
 
@@ -1207,7 +1205,7 @@ fun PreviewMapView()
 fun PreviewCreateView()
 {
     CrimeShieldTheme {
-        CreateScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Create")
+        CreateScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Create")
     }
 }
 
@@ -1216,8 +1214,8 @@ fun PreviewCreateView()
 fun PreviewSentReportsView()
 {
     CrimeShieldTheme {
-        SentReportsScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Sent Reports")
-    }//Boolean, navigate = , navController, startDestination = "settings")
+        SentReportsScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Sent Reports")
+    }
 }
 
 @Preview(showBackground = true, name = "Settings Preview") //Preview for Settings Screen
@@ -1225,7 +1223,7 @@ fun PreviewSentReportsView()
 fun PreviewSettingsView()
 {
     CrimeShieldTheme {
-        SettingsScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Settings")
+        SettingsScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Settings")
     }
 }
 
@@ -1234,7 +1232,7 @@ fun PreviewSettingsView()
 fun PreviewNewsView()
 {
     CrimeShieldTheme {
-        NewsScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "News")
+        NewsScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "News")
     }
 }
 
@@ -1243,7 +1241,7 @@ fun PreviewNewsView()
 fun PreviewMissingView()
 {
     CrimeShieldTheme {
-        MissingScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Missing")
+        MissingScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Missing")
     }
 }
 
@@ -1252,6 +1250,6 @@ fun PreviewMissingView()
 fun PreviewSexOffendersView()
 {
     CrimeShieldTheme {
-        SexOffendersScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Sex Offenders")
+        SexOffendersScreen(navigateBack = false, navigate = {}, navController = rememberNavController(), startDestination = "Sex Offenders")
     }
 }
