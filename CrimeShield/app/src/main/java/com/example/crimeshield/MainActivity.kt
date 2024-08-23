@@ -289,7 +289,6 @@ class MainActivity : ComponentActivity()
     }
 }
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
@@ -297,8 +296,7 @@ fun HomeScreen(
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
-)
-{
+) {
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -492,7 +490,6 @@ fun MapScreen(
                                     }
                                 }
                             }
-
                         }
                     )
                 }
@@ -792,7 +789,7 @@ fun SettingsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SentReportsScreen(
-    NavigateBack: Boolean,
+    NavigateBack: Boolean.Companion,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -892,7 +889,7 @@ fun SentReportsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsScreen(
-    NavigateBack: Boolean,
+    NavigateBack: Boolean.Companion,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -991,7 +988,7 @@ fun NewsScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MissingScreen(
-    NavigateBack: Boolean,
+    NavigateBack: Boolean.Companion,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -1090,7 +1087,7 @@ fun MissingScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SexOffendersScreen(
-    NavigateBack: Boolean,
+    NavigateBack: Boolean.Companion,
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
@@ -1192,7 +1189,7 @@ fun SexOffendersScreen(
 fun PreviewHomeView()
 {
     CrimeShieldTheme {
-        HomeScreen(navController = rememberNavController(), startDestination = "Home" )
+        HomeScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Home" )
     }
 }
 
@@ -1201,7 +1198,7 @@ fun PreviewHomeView()
 fun PreviewMapView()
 {
     CrimeShieldTheme {
-        MapScreen(navController = rememberNavController(), startDestination = "Map")
+        MapScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Map")
     }
 }
 
@@ -1210,7 +1207,7 @@ fun PreviewMapView()
 fun PreviewCreateView()
 {
     CrimeShieldTheme {
-        CreateScreen(navController = rememberNavController(), startDestination = "Create")
+        CreateScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Create")
     }
 }
 
@@ -1219,8 +1216,8 @@ fun PreviewCreateView()
 fun PreviewSentReportsView()
 {
     CrimeShieldTheme {
-        SentReportsScreen(navController = rememberNavController(), startDestination = "Sent Reports")
-    }
+        SentReportsScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Sent Reports")
+    }//Boolean, navigate = , navController, startDestination = "settings")
 }
 
 @Preview(showBackground = true, name = "Settings Preview") //Preview for Settings Screen
@@ -1228,7 +1225,7 @@ fun PreviewSentReportsView()
 fun PreviewSettingsView()
 {
     CrimeShieldTheme {
-        SettingsScreen(navController = rememberNavController(), startDestination = "Settings")
+        SettingsScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Settings")
     }
 }
 
@@ -1237,7 +1234,7 @@ fun PreviewSettingsView()
 fun PreviewNewsView()
 {
     CrimeShieldTheme {
-        NewsScreen(navController = rememberNavController(), startDestination = "News")
+        NewsScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "News")
     }
 }
 
@@ -1246,7 +1243,7 @@ fun PreviewNewsView()
 fun PreviewMissingView()
 {
     CrimeShieldTheme {
-        MissingScreen(navController = rememberNavController(), startDestination = "Missing")
+        MissingScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Missing")
     }
 }
 
@@ -1255,6 +1252,6 @@ fun PreviewMissingView()
 fun PreviewSexOffendersView()
 {
     CrimeShieldTheme {
-        SexOffendersScreen(navController = rememberNavController(), startDestination = "Sex Offenders")
+        SexOffendersScreen(Boolean, navigate = , navController = rememberNavController(), startDestination = "Sex Offenders")
     }
 }
