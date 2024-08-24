@@ -70,6 +70,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import android.Manifest
+import android.graphics.Point
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -507,12 +508,17 @@ fun MapScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(20.dp))
-        Image(
-            painter = painterResource(id = R.drawable.map2),
-            contentDescription = "Map",
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 90.dp)
+        MapboxMap(
+            Modifier.fillMaxSize(),
+            mapViewportState = MapViewportState().apply
+            {
+                setCameraOptions {
+                    zoom(2.0)
+                    center(Point.fromLngLat(-98.0, 39.5))
+                    pitch(0.0)
+                    bearing(0.0)
+                }
+            },
         )
     }
 }
