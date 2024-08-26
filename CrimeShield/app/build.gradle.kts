@@ -27,6 +27,18 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    buildscript {
+        repositories {
+            maven { url = uri( "https://api.mapbox.com/downloads/v2/releases/maven") }
+        }
+    }
+
+    allprojects {
+        repositories {
+            maven { url = uri("https://api.mapbox.com/downloads/v2/releases/maven" )}
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -84,7 +96,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation ("androidx.compose.material:material-icons-extended:1.6.8")
-    implementation("com.mapbox.maps:android:10.14.0")
+    implementation("com.mapbox.maps:android:11.6.0")
     implementation("com.mapbox.extension:maps-compose:11.6.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

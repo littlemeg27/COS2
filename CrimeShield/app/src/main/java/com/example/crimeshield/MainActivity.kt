@@ -508,7 +508,20 @@ fun MapScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(20.dp))
-        MapboxMap(
+
+        @Composable
+        fun MapBoxScreen() {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                MapBoxMap(
+                    point = Point.fromLngLat(-0.6333, 35.6971),
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
+        }
+        /*MapboxMap(
             Modifier.fillMaxSize(),
             mapViewportState = MapViewportState().apply
             {
@@ -519,7 +532,7 @@ fun MapScreen(
                     bearing(0.0)
                 }
             },
-        )
+        )*/
     }
 }
 
