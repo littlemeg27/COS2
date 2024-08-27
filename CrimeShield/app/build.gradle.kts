@@ -28,15 +28,15 @@ android {
         }
     }
 
-    buildscript {
+    /*buildscript {
         repositories {
             maven { url = uri( "https://api.mapbox.com/downloads/v2/releases/maven") }
         }
-    }
+    }*/
 
     allprojects {
         repositories {
-            maven { url = uri("https://api.mapbox.com/downloads/v2/releases/maven" )}
+            maven { url = uri("https://api.mapbox.com/downloads/v2/releases/maven") }
         }
     }
     compileOptions {
@@ -64,7 +64,6 @@ android {
         stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
     }
 }
-
 
 dependencies {
 

@@ -1,10 +1,12 @@
 
 package com.example.crimeshield
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -29,27 +31,27 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,23 +65,15 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import kotlinx.coroutines.launch
-import android.Manifest
-import android.graphics.Point
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.ui.unit.dp
 
 data class BottomNavigationItem(
     val title: String,
@@ -120,7 +114,7 @@ val items = listOf(
 
 class MainActivity : ComponentActivity()
 {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, MapboxExperimental::class)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -193,11 +187,12 @@ class MainActivity : ComponentActivity()
                                 .padding(16.dp),
                             horizontalArrangement = Arrangement.SpaceAround
                         ){
-                            IconButton(onClick = {
+                            IconButton(onClick =
+                            {
                                 scope.launch {
                                     scaffoldState.bottomSheetState.expand()
                                 }
-                                }
+                            }
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Photo,
@@ -205,7 +200,8 @@ class MainActivity : ComponentActivity()
                                 )
                             }
                             IconButton(
-                                onClick = {
+                                onClick =
+                                {
                                     takePhoto(
                                         controller = controller,
                                         onPhotoTaken = viewModel::onTakePhoto
@@ -416,6 +412,7 @@ fun HomeScreen(
     }
 }
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MapScreen(
@@ -509,22 +506,9 @@ fun MapScreen(
             modifier = Modifier
                 .padding(20.dp))
 
-        @Composable
-        fun MapBoxScreen() {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                MapBoxMap(
-                    point = Point.fromLngLat(-0.6333, 35.6971),
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-        }
-        /*MapboxMap(
+        MapboxMap(
             Modifier.fillMaxSize(),
-            mapViewportState = MapViewportState().apply
-            {
+            mapViewportState = MapViewportState().apply {
                 setCameraOptions {
                     zoom(2.0)
                     center(Point.fromLngLat(-98.0, 39.5))
@@ -532,7 +516,7 @@ fun MapScreen(
                     bearing(0.0)
                 }
             },
-        )*/
+        )
     }
 }
 
