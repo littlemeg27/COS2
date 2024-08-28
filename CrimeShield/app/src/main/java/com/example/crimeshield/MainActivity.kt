@@ -56,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,9 +71,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
-import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import kotlinx.coroutines.launch
 
 data class BottomNavigationItem(
@@ -114,7 +112,7 @@ val items = listOf(
 
 class MainActivity : ComponentActivity()
 {
-    @OptIn(ExperimentalMaterial3Api::class, MapboxExperimental::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -505,19 +503,7 @@ fun MapScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(20.dp))
-
-        MapboxMap(
-            Modifier.fillMaxSize(),
-            mapViewportState = MapViewportState().apply {
-                setCameraOptions {
-                    zoom(2.0)
-                    center(Point.fromLngLat(-98.0, 39.5))
-                    pitch(0.0)
-                    bearing(0.0)
-                }
-            },
-        )
-    }
+       }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
