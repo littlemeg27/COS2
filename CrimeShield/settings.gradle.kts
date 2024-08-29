@@ -13,11 +13,10 @@ pluginManagement {
 
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-
         maven {
 
         }
@@ -35,7 +34,7 @@ develocity {
 }
 
 plugins {
-    id("com.gradle.develocity") version "3.17.5"
+    id("com.gradle.develocity") version "3.18"
 }
 
 rootProject.name = "CrimeShield"
