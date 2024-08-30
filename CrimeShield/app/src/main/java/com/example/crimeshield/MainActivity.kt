@@ -70,6 +70,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import android.Manifest
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -79,6 +80,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 
 data class BottomNavigationItem(
     val title: String,
@@ -406,11 +416,16 @@ fun HomeScreen(
         {
             Text(text = "Create a Report!")
         }
-        Image( //Place holder for map
-            painter = painterResource(id = R.drawable.map),
-            contentDescription = "Map",
+        var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+        var properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
+
+        GoogleMap(
             modifier = Modifier
-                .padding(top = 10.dp)
+                .fillMaxSize()
+                .padding(top = 20.dp, bottom = 80.dp),
+            properties = properties,
+            uiSettings = uiSettings
+
         )
     }
 }
@@ -422,8 +437,7 @@ fun MapScreen(
     navigate: () -> Unit,
     navController: NavController,
     startDestination: String,
-)
-{
+) {
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -435,7 +449,7 @@ fun MapScreen(
     Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar =
         {
-            NavigationBar{
+            NavigationBar {
                 items.forEachIndexed { index, item ->
                     val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
 
@@ -460,13 +474,11 @@ fun MapScreen(
                         alwaysShowLabel = true,
                         icon =
                         {
-                            if (navigateBack)
-                            {
+                            if (navigateBack) {
                                 IconButton(onClick = navigate)
                                 {
                                     Icon(
-                                        imageVector = if (isSelected)
-                                        {
+                                        imageVector = if (isSelected) {
                                             item.selectedIcon
                                         } else item.unselectedIcon,
                                         contentDescription = item.title
@@ -502,18 +514,23 @@ fun MapScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(text = "Map",
+        Text(
+            text = "Map",
             fontSize = 35.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .padding(20.dp))
-        Image(
-            painter = painterResource(id = R.drawable.map2),
-            contentDescription = "Map",
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 90.dp)
+                .padding(20.dp)
         )
+
+        var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+        var properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
+
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                properties = properties,
+                uiSettings = uiSettings
+            )
+
     }
 }
 

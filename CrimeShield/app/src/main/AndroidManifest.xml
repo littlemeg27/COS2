@@ -21,6 +21,9 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.CrimeShield"
             tools:targetApi="34">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDOTDaUCjTwpFudd9tOLoW1aUIoj_uhH4Y" />
         <activity
                 android:name=".MainActivity"
                 android:exported="true"
