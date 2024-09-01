@@ -79,7 +79,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavDestinationDsl
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -232,21 +237,10 @@ class MainActivity : ComponentActivity()
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background)
                 {
-                    val navController = rememberNavController()
-                    NavHost(navController, startDestination = "home") //NavBar for the bottom of the screen
-                    {
-                        composable("home") { HomeScreen(navigateBack = false, navigate =  {}, navController, startDestination = "home") }
-                        composable("details") { MapScreen(navigateBack = false, navigate =  {}, navController, startDestination = "details") }
-                        composable("create") { CreateScreen(navigateBack = false, navigate = {}, navController, startDestination = "create") }
-                        composable("settings") { SettingsScreen(navigateBack = false, navigate = {}, navController, startDestination = "settings") }
-                    }
+
                 }
             }
         }
-        /* NavigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,*/
     }
 
     private fun takePhoto( //Taking a photo
@@ -301,12 +295,8 @@ class MainActivity : ComponentActivity()
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-) {
+fun HomeScreen(navController: NavController)
+{
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -316,18 +306,51 @@ fun HomeScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold( //Navigation Bar for the bottom of the screen
-        bottomBar =
-        {
-            NavigationBar{
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+        bottomBar = {
+            NavigationBar {
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen,item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
-                        onClick =
+                        icon =
                         {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        onClick = {
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -336,48 +359,22 @@ fun HomeScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label = {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                Icon(
-                                    imageVector = if (isSelected)
-                                    {
-                                        item.selectedIcon
-
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
-                                BadgedBox(
-                                    badge =
-                                    {
-                                        if (item.hasNews) {
-                                            Badge {
-                                                Badge()
-                                            }
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = if (index == selectedItemIndex) {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                }
-                            }
                         }
                     )
                 }
             }
         }
-    ) {
+
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -432,12 +429,8 @@ fun HomeScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-) {
+fun MapScreen(navController: NavController)
+{
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -447,18 +440,51 @@ fun MapScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold( //Navigation Bar for the bottom of the screen
-        bottomBar =
-        {
+        bottomBar = {
             NavigationBar {
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
-                        onClick =
+                        icon =
                         {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        onClick = {
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -467,48 +493,22 @@ fun MapScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label = {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack) {
-                                IconButton(onClick = navigate)
-                                {
-                                    Icon(
-                                        imageVector = if (isSelected) {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                    BadgedBox(
-                                        badge =
-                                        {
-                                            if (item.hasNews) {
-                                                Badge {
-                                                    Badge()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            }
                         }
                     )
                 }
             }
         }
-    ) {
+
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -528,7 +528,7 @@ fun MapScreen(
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 properties = properties,
-                uiSettings = uiSettings
+                uiSettings = uiSettings,
             )
 
     }
@@ -536,12 +536,7 @@ fun MapScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CreateScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-    )
+fun CreateScreen(navController: NavController)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -552,18 +547,51 @@ fun CreateScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     Scaffold( //Navigation Bar for the bottom of the screen
-        bottomBar =
-        {
+        bottomBar = {
             NavigationBar {
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
-                        onClick =
+                        icon =
                         {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        onClick = {
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -572,51 +600,22 @@ fun CreateScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label =
-                        {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                Icon(
-                                    imageVector = if (isSelected)
-                                    {
-                                        item.selectedIcon
-                                    } else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
-                                BadgedBox(
-                                    badge =
-                                    {
-                                        if (item.hasNews)
-                                        {
-                                            Badge {
-                                                Badge()
-                                            }
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = if (index == selectedItemIndex) {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                }
-                            }
-
                         }
                     )
                 }
             }
         }
-    ) {
 
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -704,13 +703,7 @@ fun CreateScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-
-    )
+fun SettingsScreen(navController: NavController)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -723,14 +716,49 @@ fun SettingsScreen(
     Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -739,54 +767,22 @@ fun SettingsScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label =
-                        {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                IconButton(onClick = navigate)
-                                {
-                                    Icon(
-                                        imageVector = if (isSelected)
-                                        {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                    BadgedBox(
-                                        badge =
-                                        {
-                                            if (item.hasNews)
-                                            {
-                                                Badge {
-                                                    Badge()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            }
-
                         }
                     )
                 }
             }
         }
-    ) {
 
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -805,12 +801,7 @@ fun SettingsScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SentReportsScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-)
+fun SentReportsScreen(navController: NavController)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -823,14 +814,49 @@ fun SentReportsScreen(
     Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -839,52 +865,22 @@ fun SentReportsScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label =
-                        {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                IconButton(onClick = navigate)
-                                {
-                                    Icon(
-                                        imageVector = if (isSelected)
-                                        {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                    BadgedBox(
-                                        badge =
-                                        {
-                                            if (item.hasNews)
-                                            {
-                                                Badge {
-                                                    Badge()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            }
                         }
                     )
                 }
             }
         }
-    ) {
+
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -903,12 +899,7 @@ fun SentReportsScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NewsScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-)
+fun NewsScreen(navController: NavController)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -921,14 +912,49 @@ fun NewsScreen(
     Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -937,53 +963,22 @@ fun NewsScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label =
-                        {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                IconButton(onClick = navigate)
-                                {
-                                    Icon(
-                                        imageVector = if (isSelected)
-                                        {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                    BadgedBox(
-                                        badge =
-                                        {
-                                            if (item.hasNews)
-                                            {
-                                                Badge {
-                                                    Badge()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            }
                         }
                     )
                 }
             }
         }
-    ) {
 
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -1002,12 +997,7 @@ fun NewsScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MissingScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-)
+fun MissingScreen(navController: NavController)
 {
     var selectedItemIndex by rememberSaveable()
     {
@@ -1020,14 +1010,49 @@ fun MissingScreen(
     Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
             NavigationBar {
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -1036,53 +1061,22 @@ fun MissingScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label =
-                        {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                IconButton(onClick = navigate)
-                                {
-                                    Icon(
-                                        imageVector = if (isSelected)
-                                        {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                    BadgedBox(
-                                        badge =
-                                        {
-                                            if (item.hasNews)
-                                            {
-                                                Badge {
-                                                    Badge()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            }
                         }
                     )
                 }
             }
         }
-    ) {
 
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -1101,13 +1095,7 @@ fun MissingScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SexOffendersScreen(
-    navigateBack: Boolean,
-    navigate: () -> Unit,
-    navController: NavController,
-    startDestination: String,
-)
-{
+fun SexOffendersScreen(navController: NavController) {
     var selectedItemIndex by rememberSaveable()
     {
         mutableIntStateOf(0)
@@ -1118,15 +1106,50 @@ fun SexOffendersScreen(
 
     Scaffold( //Navigation Bar for the bottom of the screen
         bottomBar = {
-            NavigationBar { //Navigation Bar for the bottom of the screen
-                items.forEachIndexed { index, item ->
-                    val isSelected = item.title.lowercase() == navBackStackEntry?.destination?.route
-
+            NavigationBar {
+                val currentDestination = navBackStackEntry?.destination
+                items.forEachIndexed { screen, item ->
                     NavigationBarItem(
-                        selected = selectedItemIndex == index,
+                        icon =
+                        {
+                            Icon(
+                                imageVector = if (isSelected)
+                                {
+                                    item.selectedIcon
+                                }
+                                else
+                                {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = item.title
+                            )
+                            BadgedBox(
+                                badge =
+                                {
+                                    if (item.hasNews)
+                                    {
+                                        Badge {
+                                            Badge()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (index == selectedItemIndex)
+                                    {
+                                        item.selectedIcon
+                                    } else item.unselectedIcon,
+                                    contentDescription = item.title
+                                )
+                            }
+                        },
+                        label = {
+                            Text(text = item.title)
+                        },
+                        alwaysShowLabel = false,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.title.lowercase())
+                            navController.navigate(screen.route)
                             {
                                 popUpTo(navController.graph.findStartDestination().id)
                                 {
@@ -1135,53 +1158,26 @@ fun SexOffendersScreen(
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        },
-                        label =
-                        {
-                            Text(text = item.title)
-                        },
-                        alwaysShowLabel = true,
-                        icon =
-                        {
-                            if (navigateBack)
-                            {
-                                IconButton(onClick = navigate)
-                                {
-                                    Icon(
-                                        imageVector = if (isSelected)
-                                        {
-                                            item.selectedIcon
-                                        } else item.unselectedIcon,
-                                        contentDescription = item.title
-                                    )
-                                    BadgedBox(
-                                        badge =
-                                        {
-                                            if (item.hasNews)
-                                            {
-                                                Badge {
-                                                    Badge()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (index == selectedItemIndex) {
-                                                item.selectedIcon
-                                            } else item.unselectedIcon,
-                                            contentDescription = item.title
-                                        )
-                                    }
-                                }
-                            }
                         }
+
                     )
                 }
             }
         }
-    ) {
 
+
+    ) { innerPadding ->
+        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding))
+        {
+            composable(Screen.Home.route) { HomeScreen(navController) }
+            composable(Screen.Map.route) { MapScreen(navController) }
+            composable(Screen.Create.route) { CreateScreen(navController) }
+            composable(Screen.Settings.route) { SettingsScreen(navController) }
+        }
     }
+
+
+
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
