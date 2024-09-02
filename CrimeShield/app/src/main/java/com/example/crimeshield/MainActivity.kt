@@ -102,11 +102,13 @@ data class BottomNavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    val hasNews: Boolean
+    val hasNews: Boolean,
+    val Icon: ImageVector
 )
 
 //Information for UI
-sealed class Screen(val route: String, @StringRes val resourceId: Int) {
+sealed class Screen(val route: String, @StringRes val resourceId: Int)
+{
     object Home : Screen("home", R.string.homeScreen)
     object Map : Screen("map", R.string.mapScreen)
     object Create : Screen("create", R.string.createScreen)
