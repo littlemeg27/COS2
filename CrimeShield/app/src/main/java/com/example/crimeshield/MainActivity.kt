@@ -70,6 +70,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import android.Manifest
+import android.content.Intent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -80,6 +82,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.ui.graphics.BlendMode.Companion.Screen
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavDestinationDsl
@@ -103,30 +106,41 @@ data class BottomNavigationItem(
 )
 
 //Information for UI
+sealed class Screen(val route: String, @StringRes val resourceId: Int) {
+    object Home : Screen("home", R.string.homeScreen)
+    object Map : Screen("map", R.string.mapScreen)
+    object Create : Screen("create", R.string.createScreen)
+    object Settings : Screen("settings", R.string.settingsScreen)
+}
+
 val items = listOf(
     BottomNavigationItem(
         title = "Home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
         hasNews = false,
+        Screen.Home,
     ),
     BottomNavigationItem(
         title = "Map",
         selectedIcon = Icons.Filled.LocationOn,
         unselectedIcon = Icons.Outlined.LocationOn,
-        hasNews = true
+        hasNews = true,
+        Screen.Map
     ),
     BottomNavigationItem(
-        title = "Home",
+        title = "Create",
         selectedIcon = Icons.Filled.AddCircle,
         unselectedIcon = Icons.Outlined.AddCircle,
-        hasNews = false
+        hasNews = false,
+        Screen.Create
     ),
     BottomNavigationItem(
         title = "Settings",
         selectedIcon = Icons.Filled.Settings,
         unselectedIcon = Icons.Outlined.Settings,
-        hasNews = false
+        hasNews = false,
+        Screen.Settings
     )
 )
 //Information for UI
@@ -526,7 +540,9 @@ fun MapScreen(navController: NavController)
         var properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
 
             GoogleMap(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 20.dp, bottom = 80.dp),
                 properties = properties,
                 uiSettings = uiSettings,
             )
