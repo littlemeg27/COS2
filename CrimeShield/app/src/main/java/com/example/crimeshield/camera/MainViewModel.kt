@@ -1,4 +1,4 @@
-package com.example.crimeshield.Carmera
+package com.example.crimeshield.camera
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel

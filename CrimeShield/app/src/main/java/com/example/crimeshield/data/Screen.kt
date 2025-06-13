@@ -1,4 +1,4 @@
-package com.example.crimeshield.Data
+package com.example.crimeshield.data
 
 import androidx.annotation.StringRes
 import com.example.crimeshield.R

@@ -1,4 +1,4 @@
-package com.example.crimeshield.Screens
+package com.example.crimeshield.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -17,10 +17,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.crimeshield.Operations.items
+import com.example.crimeshield.data.items
+
 
 @Composable
-fun SexOffendersScreen(navController: NavController)
+fun CreateScreen(navController: NavController)
 {
     val selectedItemIndex by rememberSaveable { mutableIntStateOf(2) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()

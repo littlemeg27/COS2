@@ -1,4 +1,4 @@
-package com.example.crimeshield.Location
+package com.example.crimeshield.location
 
 //Created by Brenna Pavlinchak on 8/12/24.
 

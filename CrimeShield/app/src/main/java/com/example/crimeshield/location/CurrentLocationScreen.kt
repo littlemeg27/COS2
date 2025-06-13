@@ -1,4 +1,4 @@
-package com.example.crimeshield.Location
+package com.example.crimeshield.location
 
  //Created by Brenna Pavlinchak on 8/12/24.
 
@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.crimeshield.Carmera.PermissionBox
+import com.example.crimeshield.camera.PermissionBox
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource

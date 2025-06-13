@@ -1,4 +1,4 @@
-package com.example.crimeshield.Operations
+package com.example.crimeshield.operations
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -28,21 +28,20 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.crimeshield.Carmera.CameraPreview
-import com.example.crimeshield.Carmera.MainViewModel
-import com.example.crimeshield.Carmera.PhotoBottomSheetContent
+import com.example.crimeshield.camera.MainViewModel
+import com.example.crimeshield.screens.MissingScreen
+import com.example.crimeshield.screens.NewsScreen
+import com.example.crimeshield.screens.SexOffendersScreen
 import com.example.crimeshield.ui.theme.CrimeShieldTheme
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity()
-{
+class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!hasRequiredPermissions())
-        {
+        if (!hasRequiredPermissions()) {
             ActivityCompat.requestPermissions(this, CAMERAX_PERMISSIONS, 0)
         }
         setContent {
@@ -133,16 +132,16 @@ class MainActivity : ComponentActivity()
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHost(navController, startDestination = Screen.Home.route) {
+                    NavHost(navController, startDestination = Screen.Home.route)
+                    {
                         composable(Screen.Home.route) { HomeScreen(navController) }
                         composable(Screen.Map.route) { MapScreen(navController) }
                         composable(Screen.Create.route) { CreateScreen(navController) }
                         composable(Screen.Settings.route) { SettingsScreen(navController) }
-                        // Add these if you want to include additional screens in navigation
-                        composable("sentreports") { SentReportsScreen(navController) }
-                        composable("news") { NewsScreen(navController) }
-                        composable("missing") { MissingScreen(navController) }
-                        composable("sexoffenders") { SexOffendersScreen(navController) }
+                        composable(Screen.SentReports) { SentReportsScreen(navController) }
+                        composable(Screen.News) { NewsScreen(navController) }
+                        composable(Screen.Missing) { MissingScreen(navController) }
+                        composable(Screen.SexOffenders) { SexOffendersScreen(navController) }
                     }
                 }
             }

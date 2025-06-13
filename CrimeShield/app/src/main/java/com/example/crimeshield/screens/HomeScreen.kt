@@ -1,15 +1,14 @@
-package com.example.crimeshield.Screens
+package com.example.crimeshield.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,12 +16,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.crimeshield.Operations.items
+import com.example.crimeshield.R
+import com.example.crimeshield.data.items
+import com.google.maps.android.compose.*
 
 @Composable
-fun NewsScreen(navController: NavController)
+fun HomeScreen(navController: NavController)
 {
-    val selectedItemIndex by rememberSaveable { mutableIntStateOf(2) }
+    val selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -72,74 +73,45 @@ fun NewsScreen(navController: NavController)
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            var textState1 by remember { mutableStateOf("Name") }
-            var textState2 by remember { mutableStateOf("Phone Number") }
-            var textState3 by remember { mutableStateOf("Details") }
-
             Text(
-                text = "Crime Shield",
-                fontSize = 40.sp,
+                text = "CRIME SHIELD",
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 20.dp, bottom = 5.dp)
+                modifier = Modifier.padding(top = 20.dp)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.crimeshieldicon),
+                contentDescription = "Icon",
+                modifier = Modifier.padding(top = 10.dp)
             )
             Text(
-                text = "Report!",
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 20.dp)
-            )
-            TextField(
-                value = textState1,
-                onValueChange = { textState1 = it },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = "Person"
-                    )
-                }
-            )
-            TextField(
-                value = textState2,
-                onValueChange = { textState2 = it },
-                modifier = Modifier.padding(20.dp),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Call,
-                        contentDescription = "Number"
-                    )
-                }
+                text = "Create a Report!",
+                fontSize = 25.sp,
+                modifier = Modifier.padding(top = 10.dp)
             )
             Button(
                 modifier = Modifier
-                    .height(40.dp)
-                    .width(150.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue,
-                    contentColor = Color.White
-                ),
-                onClick = { /* Implement location logic */ }
-            ) {
-                Text(text = "Get Location")
-            }
-            TextField(
-                value = textState3,
-                onValueChange = { textState3 = it },
-                maxLines = Int.MAX_VALUE,
-                singleLine = false,
-                modifier = Modifier.padding(20.dp)
-            )
-            Button(
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(190.dp),
+                    .height(70.dp)
+                    .width(190.dp)
+                    .padding(top = 20.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red,
                     contentColor = Color.White
                 ),
-                onClick = { /* Implement submit logic */ }
+                onClick = { navController.navigate("create") }
             ) {
-                Text(text = "Submit")
+                Text(text = "Create a Report!")
             }
+            var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+            var properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
+
+            GoogleMap(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 20.dp, bottom = 80.dp),
+                properties = properties,
+                uiSettings = uiSettings
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.crimeshield.Carmera
+package com.example.crimeshield.camera
 
 //Created by Brenna Pavlinchak on 8/12/24.
 
