@@ -1,4 +1,4 @@
-package com.example.crimeshield
+package com.example.crimeshield.Location
 
 //Created by Brenna Pavlinchak on 8/12/24.
 
@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.example.crimeshield.Carmera.PermissionBox
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult

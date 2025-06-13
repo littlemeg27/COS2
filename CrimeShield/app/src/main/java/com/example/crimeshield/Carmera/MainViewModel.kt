@@ -1,4 +1,4 @@
-package com.example.crimeshield
+package com.example.crimeshield.Carmera
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
@@ -7,11 +7,13 @@ import kotlinx.coroutines.flow.asStateFlow
 
 //Created by Brenna Pavlinchak on 8/17/24.
 
-class MainViewModel : ViewModel() {
+class MainViewModel : ViewModel()
+{
     private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
     val bitmaps = _bitmaps.asStateFlow()
 
-    fun onTakePhoto(bitmap: Bitmap) {
+    fun onTakePhoto(bitmap: Bitmap)
+    {
         _bitmaps.value += bitmap
     }
 }

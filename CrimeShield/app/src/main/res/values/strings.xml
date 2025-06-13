@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">CrimeShield</string>
+    <string name="app_name">Crime Shield</string>
+    <string name="homeScreen">Home</string>
+    <string name="mapScreen">Map</string>
+    <string name="createScreen">Create</string>
+    <string name="settingsScreen">Settings</string>
+    <string name="sentReportsScreen">Sent Reports</string>
+    <string name="newsScreen">News</string>
+    <string name="missingScreen">Missing</string>
+    <string name="sexOffendersScreen">Sex Offenders</string>
 </resources>

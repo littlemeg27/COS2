@@ -25,7 +25,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDOTDaUCjTwpFudd9tOLoW1aUIoj_uhH4Y" />
         <activity
-                android:name=".MainActivity"
+                android:name=".Operations.MainActivity"
                 android:exported="true"
                 android:theme="@style/Theme.CrimeShield">
             <intent-filter>
